@@ -1,0 +1,70 @@
+:root {
+  --background: hsl(227, 10%, 17%);
+  --background-light: hsl(227, 11%, 25%);
+  --primary: hsl(218, 65%, 45%);
+  --primary-light: hsl(218, 65%, 58%);
+  --text: hsl(0, 0%, 96%);
+  --radius: 6px;
+  --padding: 12px;
+  --transition-time: 0.3s;
+}
+
+@font-face {
+  font-family: 'Roboto-Regular';
+  src: url(/fonts/Roboto/Roboto-Regular.ttf);
+}
+
+@font-face {
+  font-family: 'RobotoMono-Light';
+  src: url(/fonts/Roboto_Mono/RobotoMono-Light.ttf);
+}
+
+body {
+  background-color: var(--background);
+}
+
+header,
+main,
+footer {
+  max-width: 1000px;
+  margin: var(--padding) auto var(--padding);
+}
+
+@media screen and (max-width: 1000px) {
+
+  header,
+  main,
+  footer {
+    margin: var(--padding);
+  }
+}
+
+h1,
+h2,
+p,
+div,
+button {
+  font-family: 'Roboto-Regular';
+  color: var(--text);
+}
+
+a {
+  font-family: 'Roboto-Regular';
+  text-decoration: none;
+  color: var(--primary-light);
+}
+
+code,
+.mono {
+  font-family: 'RobotoMono-Light';
+  font-size: 14px;
+}
+
+code {
+  display: block;
+  padding: var(--padding);
+  background-color: hsla(0, 0%, 0%, 0.6);
+  border-radius: var(--radius);
+  max-height: 300px;
+  overflow: auto;
+}

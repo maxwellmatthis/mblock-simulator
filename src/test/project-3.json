@@ -1,0 +1,1124 @@
+{
+  "targets": [
+    {
+      "isStage": true,
+      "name": "Stage",
+      "variables": {},
+      "lists": {},
+      "broadcasts": {
+        "sRx{vQQ:WDDX.c?-Jp%$": "message",
+        "(?]mdsSvqN+TV2IJ|j$/": "something"
+      },
+      "blocks": {},
+      "comments": {},
+      "currentCostume": 0,
+      "costumes": [
+        {
+          "assetId": "cd21514d0531fdffb22204e0ec5ed84a",
+          "name": "backdrop1",
+          "md5ext": "cd21514d0531fdffb22204e0ec5ed84a.svg",
+          "dataFormat": "svg",
+          "rotationCenterX": 240,
+          "rotationCenterY": 180
+        }
+      ],
+      "sounds": [
+        {
+          "assetId": "83a9787d4cb6f3b7632b4ddfebf74367",
+          "name": "pop",
+          "dataFormat": "wav",
+          "format": "",
+          "rate": 48000,
+          "sampleCount": 1124,
+          "md5ext": "83a9787d4cb6f3b7632b4ddfebf74367.wav"
+        }
+      ],
+      "volume": 100,
+      "layerOrder": 0,
+      "tempo": 60,
+      "videoTransparency": 50,
+      "videoState": "off",
+      "textToSpeechLanguage": null
+    },
+    {
+      "isStage": false,
+      "name": "cyberpi",
+      "variables": {},
+      "lists": {},
+      "broadcasts": {},
+      "blocks": {
+        "D`)zfV{(WNadH-D)#1O-": {
+          "opcode": "cyberpi.cyberpi_display_print",
+          "next": "[d)jkV_GM!6b8CV3TbbP",
+          "parent": "}[bmWFkR6O1@isAh.C^9",
+          "inputs": {
+            "string_2": [
+              1,
+              [
+                10,
+                "makeblock"
+              ]
+            ]
+          },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "[d)jkV_GM!6b8CV3TbbP": {
+          "opcode": "cyberpi.cyberpi_console_set_font",
+          "next": "kb|o%^FxCWN3OOhbhM79",
+          "parent": "D`)zfV{(WNadH-D)#1O-",
+          "inputs": {
+            "inputMenu_1": [
+              1,
+              "E*mEg_..L`fH|_kG)fJ]"
+            ]
+          },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "E*mEg_..L`fH|_kG)fJ]": {
+          "opcode": "cyberpi.cyberpi_console_set_font_inputMenu_1_menu",
+          "next": null,
+          "parent": "[d)jkV_GM!6b8CV3TbbP",
+          "inputs": {},
+          "fields": {
+            "CYBERPI_CONSOLE_SET_FONT_INPUTMENU_1": [
+              "12",
+              null
+            ]
+          },
+          "shadow": true,
+          "topLevel": false
+        },
+        "}[bmWFkR6O1@isAh.C^9": {
+          "opcode": "cyberpi.cyberpi_display_println",
+          "next": "D`)zfV{(WNadH-D)#1O-",
+          "parent": "i{M?zV(WJr%5)#?B+*@V",
+          "inputs": {
+            "string_2": [
+              1,
+              [
+                10,
+                "A!"
+              ]
+            ]
+          },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "kb|o%^FxCWN3OOhbhM79": {
+          "opcode": "cyberpi.cyberpi_display_println",
+          "next": "g/EJUxmSj6jA=PfhT0uo",
+          "parent": "[d)jkV_GM!6b8CV3TbbP",
+          "inputs": {
+            "string_2": [
+              1,
+              [
+                10,
+                "makeblock"
+              ]
+            ]
+          },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "g/EJUxmSj6jA=PfhT0uo": {
+          "opcode": "cyberpi.cyberpi_display_print",
+          "next": "qULHwS:jtkgaq+!`Cqw(",
+          "parent": "kb|o%^FxCWN3OOhbhM79",
+          "inputs": {
+            "string_2": [
+              1,
+              [
+                10,
+                "makeblock"
+              ]
+            ]
+          },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "qULHwS:jtkgaq+!`Cqw(": {
+          "opcode": "cyberpi.cyberpi_display_label_show_at_somewhere_with_size",
+          "next": "2qKjJ-ZBu}!fNs8L:8}Z",
+          "parent": "g/EJUxmSj6jA=PfhT0uo",
+          "inputs": {
+            "string_2": [
+              1,
+              [
+                10,
+                "makeblock"
+              ]
+            ],
+            "inputMenu_4": [
+              1,
+              "^WTqh%Zu*Z;OA1XSU#?o"
+            ]
+          },
+          "fields": {
+            "fieldMenu_1": [
+              "0",
+              null
+            ],
+            "fieldMenu_2": [
+              "center",
+              null
+            ]
+          },
+          "shadow": false,
+          "topLevel": false
+        },
+        "^WTqh%Zu*Z;OA1XSU#?o": {
+          "opcode": "cyberpi.cyberpi_display_label_show_at_somewhere_with_size_inputMenu_4_menu",
+          "next": null,
+          "parent": "qULHwS:jtkgaq+!`Cqw(",
+          "inputs": {},
+          "fields": {
+            "CYBERPI_CONSOLE_SET_FONT_INPUTMENU_1": [
+              "12",
+              null
+            ]
+          },
+          "shadow": true,
+          "topLevel": false
+        },
+        "gR0)@/cl^z9=8hKev80r": {
+          "opcode": "cyberpi.cyberpi_display_label_show_label_xy_with_size",
+          "next": "BhlrBGSSWpDx(]X4VqZz",
+          "parent": "2qKjJ-ZBu}!fNs8L:8}Z",
+          "inputs": {
+            "string_2": [
+              1,
+              [
+                10,
+                "makeblock"
+              ]
+            ],
+            "number_2": [
+              1,
+              [
+                4,
+                "0"
+              ]
+            ],
+            "number_3": [
+              1,
+              [
+                4,
+                "0"
+              ]
+            ],
+            "inputMenu_4": [
+              1,
+              "C=eFu|zYb1$,ONhax3i("
+            ]
+          },
+          "fields": {
+            "fieldMenu_1": [
+              "0",
+              null
+            ]
+          },
+          "shadow": false,
+          "topLevel": false
+        },
+        "C=eFu|zYb1$,ONhax3i(": {
+          "opcode": "cyberpi.cyberpi_display_label_show_label_xy_with_size_inputMenu_4_menu",
+          "next": null,
+          "parent": "gR0)@/cl^z9=8hKev80r",
+          "inputs": {},
+          "fields": {
+            "CYBERPI_CONSOLE_SET_FONT_INPUTMENU_1": [
+              "12",
+              null
+            ]
+          },
+          "shadow": true,
+          "topLevel": false
+        },
+        "2qKjJ-ZBu}!fNs8L:8}Z": {
+          "opcode": "cyberpi.cyberpi_display_label_show_at_somewhere_with_size",
+          "next": "gR0)@/cl^z9=8hKev80r",
+          "parent": "qULHwS:jtkgaq+!`Cqw(",
+          "inputs": {
+            "string_2": [
+              1,
+              [
+                10,
+                "makeblock"
+              ]
+            ],
+            "inputMenu_4": [
+              1,
+              "w;5uF$ID.:zG%;.6ehbc"
+            ]
+          },
+          "fields": {
+            "fieldMenu_1": [
+              "0",
+              null
+            ],
+            "fieldMenu_2": [
+              "center",
+              null
+            ]
+          },
+          "shadow": false,
+          "topLevel": false
+        },
+        "w;5uF$ID.:zG%;.6ehbc": {
+          "opcode": "cyberpi.cyberpi_display_label_show_at_somewhere_with_size_inputMenu_4_menu",
+          "next": null,
+          "parent": "2qKjJ-ZBu}!fNs8L:8}Z",
+          "inputs": {},
+          "fields": {
+            "CYBERPI_CONSOLE_SET_FONT_INPUTMENU_1": [
+              "32",
+              null
+            ]
+          },
+          "shadow": true,
+          "topLevel": false
+        },
+        "BhlrBGSSWpDx(]X4VqZz": {
+          "opcode": "cyberpi.cyberpi_display_clear",
+          "next": null,
+          "parent": "gR0)@/cl^z9=8hKev80r",
+          "inputs": {},
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "i{M?zV(WJr%5)#?B+*@V": {
+          "opcode": "cyberpi.cyberpi_when_button_press",
+          "next": "}[bmWFkR6O1@isAh.C^9",
+          "parent": null,
+          "inputs": {},
+          "fields": {
+            "image_1": [
+              "https://ext-eu-res.makeblock.com/extlist/prod/extract/1540241210285887500/8013e0c3-03d3-4131-b6f5-1179bc4e49a0/cyberpi/imgs/4be49f89f3254cba8310a70355a92b45.svg",
+              null
+            ],
+            "fieldMenu_2": [
+              "a",
+              null
+            ]
+          },
+          "shadow": false,
+          "topLevel": true,
+          "x": 64,
+          "y": 66
+        },
+        "4U8?TT9l]I{W?v^-;7oa": {
+          "opcode": "cyberpi.cyberpi_when_button_press",
+          "next": "}kG$Qi7r,(WY`scMNldU",
+          "parent": null,
+          "inputs": {},
+          "fields": {
+            "image_1": [
+              "https://ext-eu-res.makeblock.com/extlist/prod/extract/1540241210285887500/8013e0c3-03d3-4131-b6f5-1179bc4e49a0/cyberpi/imgs/4be49f89f3254cba8310a70355a92b45.svg",
+              null
+            ],
+            "fieldMenu_2": [
+              "b",
+              null
+            ]
+          },
+          "shadow": false,
+          "topLevel": true,
+          "x": 714,
+          "y": 59
+        },
+        "}kG$Qi7r,(WY`scMNldU": {
+          "opcode": "cyberpi.cyberpi_display_print",
+          "next": null,
+          "parent": "4U8?TT9l]I{W?v^-;7oa",
+          "inputs": {
+            "string_2": [
+              1,
+              [
+                10,
+                "B!"
+              ]
+            ]
+          },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "z)GQhp!sWOjKR;PwSfgL": {
+          "opcode": "cyberpi.cyberpi_when_direction_key_press",
+          "next": ".uP6?Kw+hbnX0W$?Wo[p",
+          "parent": null,
+          "inputs": {},
+          "fields": {
+            "image_1": [
+              "https://ext-eu-res.makeblock.com/extlist/prod/extract/1540241210285887500/8013e0c3-03d3-4131-b6f5-1179bc4e49a0/cyberpi/imgs/4be49f89f3254cba8310a70355a92b45.svg",
+              null
+            ],
+            "fieldMenu_2": [
+              "up",
+              null
+            ]
+          },
+          "shadow": false,
+          "topLevel": true,
+          "x": 63,
+          "y": 621
+        },
+        ".uP6?Kw+hbnX0W$?Wo[p": {
+          "opcode": "cyberpi.cyberpi_display_print",
+          "next": null,
+          "parent": "z)GQhp!sWOjKR;PwSfgL",
+          "inputs": {
+            "string_2": [
+              1,
+              [
+                10,
+                "Pushed forward"
+              ]
+            ]
+          },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "K0,yk]1}OpKyH6!SX%5H": {
+          "opcode": "cyberpi.cyberpi_when_direction_key_press",
+          "next": "iHA:H|KABUc09~)1bt~b",
+          "parent": null,
+          "inputs": {},
+          "fields": {
+            "image_1": [
+              "https://ext-eu-res.makeblock.com/extlist/prod/extract/1540241210285887500/8013e0c3-03d3-4131-b6f5-1179bc4e49a0/cyberpi/imgs/4be49f89f3254cba8310a70355a92b45.svg",
+              null
+            ],
+            "fieldMenu_2": [
+              "down",
+              null
+            ]
+          },
+          "shadow": false,
+          "topLevel": true,
+          "x": 374,
+          "y": 622
+        },
+        "iHA:H|KABUc09~)1bt~b": {
+          "opcode": "cyberpi.cyberpi_display_print",
+          "next": null,
+          "parent": "K0,yk]1}OpKyH6!SX%5H",
+          "inputs": {
+            "string_2": [
+              1,
+              [
+                10,
+                "Pulled back"
+              ]
+            ]
+          },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "k.aTORm3n$P3T71-|Ya?": {
+          "opcode": "cyberpi.cyberpi_when_direction_key_press",
+          "next": "oLQQql.bl/1zHWC|5T![",
+          "parent": null,
+          "inputs": {},
+          "fields": {
+            "image_1": [
+              "https://ext-eu-res.makeblock.com/extlist/prod/extract/1540241210285887500/8013e0c3-03d3-4131-b6f5-1179bc4e49a0/cyberpi/imgs/4be49f89f3254cba8310a70355a92b45.svg",
+              null
+            ],
+            "fieldMenu_2": [
+              "left",
+              null
+            ]
+          },
+          "shadow": false,
+          "topLevel": true,
+          "x": 697,
+          "y": 623
+        },
+        "oLQQql.bl/1zHWC|5T![": {
+          "opcode": "cyberpi.cyberpi_display_print",
+          "next": null,
+          "parent": "k.aTORm3n$P3T71-|Ya?",
+          "inputs": {
+            "string_2": [
+              1,
+              [
+                10,
+                "Pulled left"
+              ]
+            ]
+          },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "j+Cmj~Ifuy$c4E+*V^X[": {
+          "opcode": "cyberpi.cyberpi_when_direction_key_press",
+          "next": "JjH6NL:Or=_bh}!o*uBj",
+          "parent": null,
+          "inputs": {},
+          "fields": {
+            "image_1": [
+              "https://ext-eu-res.makeblock.com/extlist/prod/extract/1540241210285887500/8013e0c3-03d3-4131-b6f5-1179bc4e49a0/cyberpi/imgs/4be49f89f3254cba8310a70355a92b45.svg",
+              null
+            ],
+            "fieldMenu_2": [
+              "right",
+              null
+            ]
+          },
+          "shadow": false,
+          "topLevel": true,
+          "x": 58,
+          "y": 799
+        },
+        "JjH6NL:Or=_bh}!o*uBj": {
+          "opcode": "cyberpi.cyberpi_display_print",
+          "next": null,
+          "parent": "j+Cmj~Ifuy$c4E+*V^X[",
+          "inputs": {
+            "string_2": [
+              1,
+              [
+                10,
+                "Pulled right"
+              ]
+            ]
+          },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "%n!*0ZPdhO|kM,kWU;FT": {
+          "opcode": "cyberpi.cyberpi_when_direction_key_press",
+          "next": "kk;FX;B=N[gZYf;I([oh",
+          "parent": null,
+          "inputs": {},
+          "fields": {
+            "image_1": [
+              "https://ext-eu-res.makeblock.com/extlist/prod/extract/1540241210285887500/8013e0c3-03d3-4131-b6f5-1179bc4e49a0/cyberpi/imgs/4be49f89f3254cba8310a70355a92b45.svg",
+              null
+            ],
+            "fieldMenu_2": [
+              "middle",
+              null
+            ]
+          },
+          "shadow": false,
+          "topLevel": true,
+          "x": 372,
+          "y": 802
+        },
+        "kk;FX;B=N[gZYf;I([oh": {
+          "opcode": "cyberpi.cyberpi_display_print",
+          "next": null,
+          "parent": "%n!*0ZPdhO|kM,kWU;FT",
+          "inputs": {
+            "string_2": [
+              1,
+              [
+                10,
+                "Middle pressed"
+              ]
+            ]
+          },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "sC/}#~zU*7[M9RJ/*n4h": {
+          "opcode": "cyberpi.cyberpi_when_detect_action",
+          "next": "0/5}8zbn2|W*fDMS~)@R",
+          "parent": null,
+          "inputs": {},
+          "fields": {
+            "image_1": [
+              "https://ext-eu-res.makeblock.com/extlist/prod/extract/1540241210285887500/8013e0c3-03d3-4131-b6f5-1179bc4e49a0/cyberpi/imgs/a0d1d1cd18be48f3b571472f2c2114bf.svg",
+              null
+            ],
+            "tilt": [
+              "is_waveleft",
+              null
+            ]
+          },
+          "shadow": false,
+          "topLevel": true,
+          "x": 65,
+          "y": 979
+        },
+        "7tKfBg#F!4|U.aPKlY3)": {
+          "opcode": "cyberpi.cyberpi_when_detect_action",
+          "next": "s2CMXj~h-{nSZreS!lGf",
+          "parent": null,
+          "inputs": {},
+          "fields": {
+            "image_1": [
+              "https://ext-eu-res.makeblock.com/extlist/prod/extract/1540241210285887500/8013e0c3-03d3-4131-b6f5-1179bc4e49a0/cyberpi/imgs/a0d1d1cd18be48f3b571472f2c2114bf.svg",
+              null
+            ],
+            "tilt": [
+              "is_waveright",
+              null
+            ]
+          },
+          "shadow": false,
+          "topLevel": true,
+          "x": 400,
+          "y": 975
+        },
+        "0/5}8zbn2|W*fDMS~)@R": {
+          "opcode": "cyberpi.cyberpi_display_print",
+          "next": null,
+          "parent": "sC/}#~zU*7[M9RJ/*n4h",
+          "inputs": {
+            "string_2": [
+              1,
+              [
+                10,
+                "Wave left"
+              ]
+            ]
+          },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "s2CMXj~h-{nSZreS!lGf": {
+          "opcode": "cyberpi.cyberpi_display_print",
+          "next": null,
+          "parent": "7tKfBg#F!4|U.aPKlY3)",
+          "inputs": {
+            "string_2": [
+              1,
+              [
+                10,
+                "Wave right"
+              ]
+            ]
+          },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "g2.PtguPQWrHX.e-3E,u": {
+          "opcode": "cyberpi.cyberpi_when_detect_action",
+          "next": "d{A0w=,Kva^15X_fc);Q",
+          "parent": null,
+          "inputs": {},
+          "fields": {
+            "image_1": [
+              "https://ext-eu-res.makeblock.com/extlist/prod/extract/1540241210285887500/8013e0c3-03d3-4131-b6f5-1179bc4e49a0/cyberpi/imgs/a0d1d1cd18be48f3b571472f2c2114bf.svg",
+              null
+            ],
+            "tilt": [
+              "is_waveup",
+              null
+            ]
+          },
+          "shadow": false,
+          "topLevel": true,
+          "x": 72,
+          "y": 1152
+        },
+        "d{A0w=,Kva^15X_fc);Q": {
+          "opcode": "cyberpi.cyberpi_display_print",
+          "next": null,
+          "parent": "g2.PtguPQWrHX.e-3E,u",
+          "inputs": {
+            "string_2": [
+              1,
+              [
+                10,
+                "Wave up"
+              ]
+            ]
+          },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "$~L@mE^iJO,.NoYmJe4k": {
+          "opcode": "cyberpi.cyberpi_when_detect_action",
+          "next": "C~NnRO~z5OI-Sa}ySu]y",
+          "parent": null,
+          "inputs": {},
+          "fields": {
+            "image_1": [
+              "https://ext-eu-res.makeblock.com/extlist/prod/extract/1540241210285887500/8013e0c3-03d3-4131-b6f5-1179bc4e49a0/cyberpi/imgs/a0d1d1cd18be48f3b571472f2c2114bf.svg",
+              null
+            ],
+            "tilt": [
+              "is_wavedown",
+              null
+            ]
+          },
+          "shadow": false,
+          "topLevel": true,
+          "x": 418,
+          "y": 1152
+        },
+        "C~NnRO~z5OI-Sa}ySu]y": {
+          "opcode": "cyberpi.cyberpi_display_print",
+          "next": null,
+          "parent": "$~L@mE^iJO,.NoYmJe4k",
+          "inputs": {
+            "string_2": [
+              1,
+              [
+                10,
+                "Wave down"
+              ]
+            ]
+          },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "OOJz1IanO(*pyu6lUy{H": {
+          "opcode": "cyberpi.cyberpi_when_detect_action",
+          "next": "ZZ[W6zre?uJ+PU.q8+43",
+          "parent": null,
+          "inputs": {},
+          "fields": {
+            "image_1": [
+              "https://ext-eu-res.makeblock.com/extlist/prod/extract/1540241210285887500/8013e0c3-03d3-4131-b6f5-1179bc4e49a0/cyberpi/imgs/a0d1d1cd18be48f3b571472f2c2114bf.svg",
+              null
+            ],
+            "tilt": [
+              "is_clockwise",
+              null
+            ]
+          },
+          "shadow": false,
+          "topLevel": true,
+          "x": 68,
+          "y": 1333
+        },
+        "ZZ[W6zre?uJ+PU.q8+43": {
+          "opcode": "cyberpi.cyberpi_display_print",
+          "next": null,
+          "parent": "OOJz1IanO(*pyu6lUy{H",
+          "inputs": {
+            "string_2": [
+              1,
+              [
+                10,
+                "Rotate clockwise"
+              ]
+            ]
+          },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "y(!j.SY.T_li/*g_=ui6": {
+          "opcode": "cyberpi.cyberpi_when_detect_action",
+          "next": "aO+SLnz$[2aBt`=.|5#6",
+          "parent": null,
+          "inputs": {},
+          "fields": {
+            "image_1": [
+              "https://ext-eu-res.makeblock.com/extlist/prod/extract/1540241210285887500/8013e0c3-03d3-4131-b6f5-1179bc4e49a0/cyberpi/imgs/a0d1d1cd18be48f3b571472f2c2114bf.svg",
+              null
+            ],
+            "tilt": [
+              "is_anticlockwise",
+              null
+            ]
+          },
+          "shadow": false,
+          "topLevel": true,
+          "x": 451,
+          "y": 1337
+        },
+        "aO+SLnz$[2aBt`=.|5#6": {
+          "opcode": "cyberpi.cyberpi_display_print",
+          "next": null,
+          "parent": "y(!j.SY.T_li/*g_=ui6",
+          "inputs": {
+            "string_2": [
+              1,
+              [
+                10,
+                "Rotate counterclockwise"
+              ]
+            ]
+          },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "Og{]0@zLmh@:h_M^M=uf": {
+          "opcode": "cyberpi.cyberpi_when_detect_action",
+          "next": "KPCFX-GpHlpYuwXQ1js~",
+          "parent": null,
+          "inputs": {},
+          "fields": {
+            "image_1": [
+              "https://ext-eu-res.makeblock.com/extlist/prod/extract/1540241210285887500/8013e0c3-03d3-4131-b6f5-1179bc4e49a0/cyberpi/imgs/a0d1d1cd18be48f3b571472f2c2114bf.svg",
+              null
+            ],
+            "tilt": [
+              "is_freefall",
+              null
+            ]
+          },
+          "shadow": false,
+          "topLevel": true,
+          "x": 68,
+          "y": 1498
+        },
+        "KPCFX-GpHlpYuwXQ1js~": {
+          "opcode": "cyberpi.cyberpi_display_print",
+          "next": null,
+          "parent": "Og{]0@zLmh@:h_M^M=uf",
+          "inputs": {
+            "string_2": [
+              1,
+              [
+                10,
+                "Freefall"
+              ]
+            ]
+          },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "ijKC2EnSfhZd$yP-ii~u": {
+          "opcode": "cyberpi.cyberpi_when_detect_action",
+          "next": "8KIvmIg}wThd?T08;+vQ",
+          "parent": null,
+          "inputs": {},
+          "fields": {
+            "image_1": [
+              "https://ext-eu-res.makeblock.com/extlist/prod/extract/1540241210285887500/8013e0c3-03d3-4131-b6f5-1179bc4e49a0/cyberpi/imgs/a0d1d1cd18be48f3b571472f2c2114bf.svg",
+              null
+            ],
+            "tilt": [
+              "is_shake",
+              null
+            ]
+          },
+          "shadow": false,
+          "topLevel": true,
+          "x": 450,
+          "y": 1495
+        },
+        "8KIvmIg}wThd?T08;+vQ": {
+          "opcode": "cyberpi.cyberpi_display_print",
+          "next": null,
+          "parent": "ijKC2EnSfhZd$yP-ii~u",
+          "inputs": {
+            "string_2": [
+              1,
+              [
+                10,
+                "Shaken"
+              ]
+            ]
+          },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "+i/o67QsB[X6R{B@P$3J": {
+          "opcode": "event_whenbroadcastreceived",
+          "next": "[.N(%eXCt{+g#zV{3JKX",
+          "parent": null,
+          "inputs": {},
+          "fields": {
+            "BROADCAST_OPTION": [
+              "something",
+              "(?]mdsSvqN+TV2IJ|j$/"
+            ]
+          },
+          "shadow": false,
+          "topLevel": true,
+          "x": 70,
+          "y": 1692
+        },
+        "[.N(%eXCt{+g#zV{3JKX": {
+          "opcode": "event_broadcast",
+          "next": null,
+          "parent": "+i/o67QsB[X6R{B@P$3J",
+          "inputs": {
+            "BROADCAST_INPUT": [
+              1,
+              [
+                11,
+                "something",
+                "(?]mdsSvqN+TV2IJ|j$/"
+              ]
+            ]
+          },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        }
+      },
+      "comments": {},
+      "currentCostume": 0,
+      "costumes": [
+        {
+          "assetId": "06d70cb3d65abe36615f0d51e08c3404",
+          "name": "cyberpi",
+          "bitmapResolution": 1,
+          "md5ext": "06d70cb3d65abe36615f0d51e08c3404.svg",
+          "dataFormat": "svg",
+          "rotationCenterX": 47,
+          "rotationCenterY": 55
+        }
+      ],
+      "sounds": [],
+      "volume": 100,
+      "layerOrder": 1,
+      "visible": false,
+      "x": 0,
+      "y": 0,
+      "size": 100,
+      "direction": 90,
+      "draggable": false,
+      "rotationStyle": "all around",
+      "deviceId": "cyberpi",
+      "extInfo": {
+        "device": true,
+        "name": "cyberpi",
+        "icon": "https://ext-eu-res.makeblock.com/extlist/prod/extract/1540241210285887500/8013e0c3-03d3-4131-b6f5-1179bc4e49a0/cyberpi/imgs/cf3ea8a97aa04f06b093c6200eaaf800.png",
+        "enableCode": true,
+        "enableUpload": [
+          "serialport",
+          "ble",
+          "wifi"
+        ],
+        "enableOnline": [
+          "serialport",
+          "ble",
+          "wifi"
+        ],
+        "shouldConnect": [
+          "serialport"
+        ],
+        "defaultOnline": true,
+        "options": {
+          "connect": {
+            "serialport": {
+              "helpLink": "",
+              "tips": {
+                "success": [
+                  ""
+                ],
+                "fail": [
+                  "cyberpi.connect_fail_418dd2b0",
+                  "cyberpi.connect_fail_be44da45",
+                  "cyberpi.connect_fail_81f19800"
+                ]
+              },
+              "baudRate": "115200",
+              "vendorId": "0x7523"
+            },
+            "ble": {
+              "helpLink": "",
+              "tips": {
+                "success": [
+                  ""
+                ],
+                "fail": [
+                  "cyberpi.connect_fail_a2244e18",
+                  "cyberpi.connect_fail_2ff4c830",
+                  "cyberpi.connect_fail_f516f160"
+                ]
+              },
+              "channel": "1",
+              "localName": "Makeblock",
+              "serviceUUID": "ffe1",
+              "writeProperty": "ffe3",
+              "notifyProperty": "ffe2"
+            },
+            "hid": {
+              "helpLink": "",
+              "tips": {
+                "success": [
+                  ""
+                ],
+                "fail": [
+                  ""
+                ]
+              }
+            },
+            "wifi": {
+              "helpLink": "",
+              "tips": {
+                "success": [],
+                "fail": []
+              }
+            },
+            "24g": {
+              "helpLink": "",
+              "tips": {
+                "success": [],
+                "fail": []
+              }
+            }
+          },
+          "upload": {
+            "helpLink": "",
+            "tips": {
+              "success": [
+                ""
+              ],
+              "fail": [
+                "cyberpi.upload_fail_440e4ba6",
+                "cyberpi.upload_fail_24d8e745",
+                "cyberpi.upload_fail_c52d223b"
+              ]
+            },
+            "middlewares": [
+              {
+                "name": "codey"
+              },
+              {
+                "name": "intl"
+              }
+            ],
+            "driver": {
+              "name": "firefly_upload"
+            }
+          },
+          "firmware": {
+            "helpLink": "",
+            "tips": {
+              "success": [
+                "cyberpi.firmware_success_70e9b6c0"
+              ],
+              "fail": [
+                "cyberpi.firmware_fail_9b5aae92",
+                "cyberpi.firmware_fail_9a92af14"
+              ]
+            },
+            "driver": {
+              "name": "esp_tool"
+            }
+          }
+        },
+        "firmware": [
+          {
+            "id": "9c2fcf2b",
+            "name": "cyberpi.firmwares_version_9c2fcf2b",
+            "version": "44.01.009",
+            "isDefault": true,
+            "url": {
+              "name": "cyberpi_firmware_44_01_009-ht3.bin",
+              "url": "https://ext-eu-res.makeblock.com/extlist/prod/extract/1540241210285887500/8013e0c3-03d3-4131-b6f5-1179bc4e49a0/cyberpi/res/4c0841e69e7d46d3b12d2cfb2051e1e3.bin"
+            },
+            "modules": [
+              {
+                "id": "5ecebe3e",
+                "name": "standard_shield",
+                "type": "-1024,1",
+                "version": "27.01.007",
+                "url": {
+                  "name": "CyberPi_StandardShied_APP_V2701007_20210113.bin",
+                  "url": "https://ext-eu-res.makeblock.com/extlist/prod/extract/1540241210285887500/8013e0c3-03d3-4131-b6f5-1179bc4e49a0/cyberpi/res/5f50329b238e407f9843b66fbd38d233.bin"
+                }
+              },
+              {
+                "id": "3a37acb2",
+                "name": "starter_and_starter_pro_shield",
+                "type": "-1024,128",
+                "version": "27.01.006",
+                "url": {
+                  "name": "CyberPi_StarterShied_APP_V2701006_20210817.bin",
+                  "url": "https://ext-eu-res.makeblock.com/extlist/prod/extract/1540241210285887500/8013e0c3-03d3-4131-b6f5-1179bc4e49a0/cyberpi/res/dd7b6f1b51274f66a2dd4f0fc8fcd33c.bin"
+                }
+              },
+              {
+                "id": "30264c9e",
+                "name": "at_starter_and_at_starter_pro_shield",
+                "type": "-1024,256",
+                "version": "27.01.008",
+                "url": {
+                  "name": "at32_CyberPi_StarterShied_APP_V2701008_20211011.bin",
+                  "url": "https://ext-eu-res.makeblock.com/extlist/prod/extract/1540241210285887500/8013e0c3-03d3-4131-b6f5-1179bc4e49a0/cyberpi/res/afec1165f91a4b81aaa0dcf93ce3e3f9.bin"
+                }
+              },
+              {
+                "id": "7c7660f4",
+                "name": "starter_shield",
+                "type": "-1024,2",
+                "version": "27.01.006",
+                "url": {
+                  "name": "CyberPi_StarterShied_APP_V2701006_20210817.bin",
+                  "url": "https://ext-eu-res.makeblock.com/extlist/prod/extract/1540241210285887500/8013e0c3-03d3-4131-b6f5-1179bc4e49a0/cyberpi/res/3631086423e546b3acd89f01cc3b4ca2.bin"
+                }
+              }
+            ]
+          }
+        ],
+        "settings": [
+          {
+            "text": "cyberpi.UPDATE_FIRMWARE",
+            "handle": {}
+          },
+          {
+            "id": "05de708e",
+            "text": "cyberpi.settings_05de708e"
+          },
+          {
+            "id": "cc775efd",
+            "text": "cyberpi.settings_cc775efd"
+          }
+        ],
+        "categoriesOrder": [
+          "cate_34b1ba6f",
+          "E_1783_n",
+          "cate_52186034",
+          "cate_c589c493",
+          "E_1784_n",
+          "mesh",
+          "ai",
+          "iot",
+          "events",
+          "control",
+          "operators",
+          "data",
+          "myBlocks"
+        ],
+        "ota": {
+          "param": {
+            "host": "",
+            "text": ""
+          },
+          "desc": []
+        },
+        "codeTypes": [
+          "python"
+        ]
+      },
+      "loadedExtIds": [],
+      "editorMode": "block",
+      "codes": null,
+      "codeTypes": "python",
+      "online": true
+    }
+  ],
+  "monitors": [],
+  "extensions": [
+    "cyberpi-cyberpi"
+  ],
+  "meta": {
+    "semver": "3.0.0",
+    "vm": "1.2.0",
+    "agent": "Mozilla/5.0 (X11; Linux x86_64; rv:104.0) Gecko/20100101 Firefox/104.0"
+  }
+}
