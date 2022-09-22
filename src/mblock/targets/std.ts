@@ -1,4 +1,4 @@
-import { ScratchType, type PrimitiveDef, type Block, type Ops } from "../block";
+import { ScratchType, type Input, type Field, type Block, type Ops } from "../block";
 import type { LANRouter } from "../global";
 
 /**
@@ -15,54 +15,54 @@ type MathOp = "abs" | "floor" | "ceil" | "sqrt" | "sin" | "cos" | "tan" | "asin"
  */
 export const StdOps: Ops<Std> = {
   // Events
-  "event_whenbroadcastreceived": async (self, b, broadcastId) => (await self.decodePrimitive(b.fields["BROADCAST_OPTION"]) !== broadcastId ? INTERRUPT : null),
-  "event_broadcast": async (self, b) => (self.runHatBlocks("event_whenbroadcastreceived", await self.decodePrimitive(b.inputs["BROADCAST_INPUT"]))),
+  "event_whenbroadcastreceived": async (self, b, broadcastId) => (self.decodeField(b.fields["BROADCAST_OPTION"]) !== broadcastId ? INTERRUPT : null),
+  "event_broadcast": async (self, b) => (self.runHatBlocks("event_whenbroadcastreceived", await self.decodeInput(b.inputs["BROADCAST_INPUT"]))),
 
   // Control
-  "control_wait": async (self, b) => new Promise(async (resolve, _) => setTimeout(resolve, await self.decodePrimitive(b.inputs["DURATION"]))),
-  "control_repeat": async (self, b) => (self.runLoopTimes(await self.decodePrimitive(b.inputs["SUBSTACK"]), await self.decodePrimitive(b.inputs["TIMES"]))),
-  "control_forever": async (self, b) => (self.runLoopForever(await self.decodePrimitive(b.inputs["SUBSTACK"]))),
-  "control_if": async (self, b) => (await self.decodePrimitive(b.inputs["CONDITIONS"]) && self.runNextsFromBlock(await self.decodePrimitive(b.inputs["SUBSTACK"]))),
+  "control_wait": async (self, b) => (await new Promise(async (resolve, _) => setTimeout(resolve, await self.decodeInput(b.inputs["DURATION"]) * 1000))),
+  "control_repeat": async (self, b) => (await self.runLoopTimes(await self.decodeInput(b.inputs["SUBSTACK"], true), await self.decodeInput(b.inputs["TIMES"]))),
+  "control_forever": async (self, b) => (await self.runLoopForever(await self.decodeInput(b.inputs["SUBSTACK"], true))),
+  "control_if": async (self, b) => (await self.runNextsFromBlock(await self.decodeInput(b.inputs["CONDITION"], true))),
   "control_if_else": async (self, b) => (
-    await self.decodePrimitive(b.inputs["CONDITIONS"])
-      ? self.runNextsFromBlock(await self.decodePrimitive(b.inputs["SUBSTACK1"]))
-      : self.runNextsFromBlock(await self.decodePrimitive(b.inputs["SUBSTACK2"]))
+    await self.decodeInput(b.inputs["CONDITIONS"])
+      ? await self.runNextsFromBlock(await self.decodeInput(b.inputs["SUBSTACK1"], true))
+      : await self.runNextsFromBlock(await self.decodeInput(b.inputs["SUBSTACK2"], true))
   ),
-  "control_wait_until": async (self, b) => { },
-  "control_repeat_until": async (self, b) => (self.runLoopUntil(await self.decodePrimitive(b.inputs["SUBSTACK"]), await self.decodePrimitive(b.inputs["CONDITION"]))),
+  "control_wait_until": async (self, b) => (await new Promise(async (resolve, _) => setInterval(async () => (await self.decodeInput(b.inputs["CONDITION"])) && resolve(null), 10))),
+  "control_repeat_until": async (self, b) => (await self.runLoopUntil(await self.decodeInput(b.inputs["SUBSTACK"], true), await self.decodeInput(b.inputs["CONDITION"], true))),
   "control_stop": async (self, b) => {
-    const stopOption = await self.decodePrimitive(b.fields["STOP_OPTION"]) as StopOption;
+    const stopOption = self.decodeField(b.fields["STOP_OPTION"]) as StopOption;
     switch (stopOption) {
-      case "all": self.stopAllLoops();
+      case "all": self.stopAllLoops(); break;
       default: throw new Error(`"control_stop" option "${stopOption}" is not supported.`);
     }
   },
 
   // Operators
-  "operator_add": async (self, b) => (await self.decodePrimitive(b.inputs["NUM1"]) + await self.decodePrimitive(b.inputs["NUM2"])),
-  "operator_subtract": async (self, b) => (await self.decodePrimitive(b.inputs["NUM1"]) - await self.decodePrimitive(b.inputs["NUM2"])),
-  "operator_multiply": async (self, b) => (await self.decodePrimitive(b.inputs["NUM1"]) * await self.decodePrimitive(b.inputs["NUM2"])),
-  "operator_divide": async (self, b) => (await self.decodePrimitive(b.inputs["NUM1"]) / await self.decodePrimitive(b.inputs["NUM2"])),
+  "operator_add": async (self, b) => (await self.decodeInput(b.inputs["NUM1"]) + await self.decodeInput(b.inputs["NUM2"])),
+  "operator_subtract": async (self, b) => (await self.decodeInput(b.inputs["NUM1"]) - await self.decodeInput(b.inputs["NUM2"])),
+  "operator_multiply": async (self, b) => (await self.decodeInput(b.inputs["NUM1"]) * await self.decodeInput(b.inputs["NUM2"])),
+  "operator_divide": async (self, b) => (await self.decodeInput(b.inputs["NUM1"]) / await self.decodeInput(b.inputs["NUM2"])),
   "operator_random": async (self, b) => {
-    const min = await self.decodePrimitive(b.inputs["FROM"]);
-    const max = await self.decodePrimitive(b.inputs["TO"]);
+    const min = await self.decodeInput(b.inputs["FROM"]);
+    const max = await self.decodeInput(b.inputs["TO"]);
     return Math.floor(min + Math.random() * (max - min + 1));
   },
-  "operator_gt": async (self, b) => (await self.decodePrimitive(b.inputs["OPERAND1"]) > await self.decodePrimitive(b.inputs["OPERAND2"])),
-  "operator_lt": async (self, b) => (await self.decodePrimitive(b.inputs["OPERAND1"]) < await self.decodePrimitive(b.inputs["OPERAND2"])),
-  "operator_equals": async (self, b) => (await self.decodePrimitive(b.inputs["OPERAND1"]) === await self.decodePrimitive(b.inputs["OPERAND2"])),
-  "operator_and": async (self, b) => (await self.decodePrimitive(b.inputs["OPERAND1"]) && await self.decodePrimitive(b.inputs["OPERAND2"])),
-  "operator_or": async (self, b) => (await self.decodePrimitive(b.inputs["OPERAND1"]) || await self.decodePrimitive(b.inputs["OPERAND2"])),
-  "operator_not": async (self, b) => (!await self.decodePrimitive(b.inputs["OPERAND"])),
-  "operator_join": async (self, b) => (await self.decodePrimitive(b.inputs["STRING1"]) + await self.decodePrimitive(b.inputs["STRING2"])),
-  "operator_letter_of": async (self, b) => ((await self.decodePrimitive(b.inputs["STRING"]) as string).charAt(await self.decodePrimitive(b.inputs["LETTER"]))),
-  "operator_length": async (self, b) => ((await self.decodePrimitive(b.inputs["STRING"]) as string).length),
-  "operator_contains": async (self, b) => ((await self.decodePrimitive(b.inputs["STRING1"]) as string).includes(await self.decodePrimitive(b.inputs["STRING2"]))),
-  "operator_mod": async (self, b) => (await self.decodePrimitive(b.inputs["NUM1"]) % await self.decodePrimitive(b.inputs["NUM2"])),
-  "operator_round": async (self, b) => (Math.round(await self.decodePrimitive(b.inputs["NUM"]))),
+  "operator_gt": async (self, b) => (await self.decodeInput(b.inputs["OPERAND1"]) > await self.decodeInput(b.inputs["OPERAND2"])),
+  "operator_lt": async (self, b) => (await self.decodeInput(b.inputs["OPERAND1"]) < await self.decodeInput(b.inputs["OPERAND2"])),
+  "operator_equals": async (self, b) => (await self.decodeInput(b.inputs["OPERAND1"]) === await self.decodeInput(b.inputs["OPERAND2"])),
+  "operator_and": async (self, b) => (await self.decodeInput(b.inputs["OPERAND1"]) && await self.decodeInput(b.inputs["OPERAND2"])),
+  "operator_or": async (self, b) => (await self.decodeInput(b.inputs["OPERAND1"]) || await self.decodeInput(b.inputs["OPERAND2"])),
+  "operator_not": async (self, b) => (!await self.decodeInput(b.inputs["OPERAND"])),
+  "operator_join": async (self, b) => (await self.decodeInput(b.inputs["STRING1"]) + await self.decodeInput(b.inputs["STRING2"])),
+  "operator_letter_of": async (self, b) => ((await self.decodeInput(b.inputs["STRING"]) as string).charAt(await self.decodeInput(b.inputs["LETTER"]))),
+  "operator_length": async (self, b) => ((await self.decodeInput(b.inputs["STRING"]) as string).length),
+  "operator_contains": async (self, b) => ((await self.decodeInput(b.inputs["STRING1"]) as string).includes(await self.decodeInput(b.inputs["STRING2"]))),
+  "operator_mod": async (self, b) => (await self.decodeInput(b.inputs["NUM1"]) % await self.decodeInput(b.inputs["NUM2"])),
+  "operator_round": async (self, b) => (Math.round(await self.decodeInput(b.inputs["NUM"]))),
   "operator_mathop": async (self, b) => {
-    const op = await self.decodePrimitive(b.fields["OPERATOR"]) as MathOp;
-    const n = await self.decodePrimitive(b.inputs["NUM"]);
+    const op = self.decodeField(b.fields["OPERATOR"]) as MathOp;
+    const n = await self.decodeInput(b.inputs["NUM"]);
     switch (op) {
       case "abs": return Math.abs(n);
       case "floor": return Math.floor(n);
@@ -84,8 +84,8 @@ export const StdOps: Ops<Std> = {
 
   // Data
   "data_variable": async (self, b) => { },
-  "data_setvariableto": async (self, b) => (self.setVariable(await self.decodePrimitive(b.fields["VARIABLE"]), await self.decodePrimitive(b.inputs["VALUE"]))),
-  "data_changevariableby": async (self, b) => { },
+  "data_setvariableto": async (self, b) => (self.setVariable(self.decodeField(b.fields["VARIABLE"]), await self.decodeInput(b.inputs["VALUE"]))),
+  "data_changevariableby": async (self, b) => (self.changeVariableBy(self.decodeField(b.fields["VARIABLE"]), await self.decodeInput(b.inputs["VALUE"]))),
   "data_showvariable": async (self, b) => { },
   "data_hidevariable": async (self, b) => { },
   "data_listcontents": async (self, b) => { },
@@ -145,10 +145,6 @@ export abstract class Std {
    */
   private activeLoops: { [index: symbol]: Loop; } = {};
   /**
-   * The time interval to wait between each iteration of the loop.
-   */
-  private loopIterationWait = 0;
-  /**
    * The global event emitter.
    */
   private lanRouter: LANRouter;
@@ -177,21 +173,35 @@ export abstract class Std {
     return this.blocks[id];
   }
 
-  public async decodePrimitive(def: PrimitiveDef): Promise<any> {
-    console.log("Decoding:", def);
-    const [type, value, id] = def;
-    if (type === ScratchType.InputBlockNoShadow ||
+  /**
+   * Decodes a scratch input array based on its scratch datatype.
+   * @param input An input array.
+   * @param noEval Can be set to `true` to return the ID of the shadow block without running it.
+   * @returns The input in the smartest format available.
+   */
+  public async decodeInput(input: Input, noEval?: true): Promise<any> {
+    const [type, value, id] = input;
+    if (
+      type === ScratchType.InputSameBlockShadow &&
+      typeof value === "object"
+    ) {
+      return this.decodeInput(value);
+    } else if (
+      type === ScratchType.InputBlockNoShadow ||
       type === ScratchType.InputDiffBlockShadow
     ) {
-      return (await this.evaluateBlock(value as string)).ret;
-    } else if (type === ScratchType.InputSameBlockShadow && typeof value === "object") {
-      return this.decodePrimitive(value);
+      if (typeof value === "object") return this.decodeInput(value);
+      else {
+        if (noEval) return value;
+        else return (await this.evaluateBlock(value as string)).ret;
+      }
+    } else if (type === ScratchType.Broadcast) {
+      return String(id);
     } else if (
-      type === ScratchType.Broadcast ||
       type === ScratchType.Variable ||
       type === ScratchType.List
     ) {
-      return String(id);
+      return this.getVariable(id as string);
     } else if (
       type === ScratchType.Number ||
       type === ScratchType.PositiveNumber ||
@@ -204,6 +214,15 @@ export abstract class Std {
   }
 
   /**
+   * Decodes a scratch field array.
+   * @param field A field array.
+   * @returns The ID, otherwise the data saved in the field.
+   */
+  public decodeField(field: Field) {
+    return field[1] || field[0];
+  }
+
+  /**
    * Runs an existing block.
    * @param id The block's ID.
    * @param options Options to pass to the operation handler.
@@ -211,11 +230,8 @@ export abstract class Std {
    */
   public async evaluateBlock(id: string, options?: any): Promise<{ nextId: string | null, ret: any; }> {
     const block = this.blocks[id];
-    // DEBUG
-    console.log("Running block: ", block);
     const ret = await this.runOp(block, options);
-    console.log("Ret: ", ret);
-    return { nextId: ret === INTERRUPT ? null : block.next, ret };
+    return { nextId: (ret === INTERRUPT ? null : block.next), ret };
   }
 
   /**
@@ -233,21 +249,19 @@ export abstract class Std {
    * @param id The block's ID.
    * @param options Options to pass to the operation handler.
    */
-  public runNextsFromBlock(id: string, options?: any) {
+  public async runNextsFromBlock(id: string, options?: any) {
     // Use as much async code as possible for the highest level of
     // parallelization, especially in forever loops.
-    (async () => {
-      try {
-        let { nextId } = await this.evaluateBlock(id, options);
-        while (true) {
-          if (nextId) nextId = (await this.evaluateBlock(nextId, null)).nextId;
-          else break;
-        }
-      } catch (error) {
-        console.error(error);
-        // TODO: better error handling
+    try {
+      let { nextId } = await this.evaluateBlock(id, options);
+      while (true) {
+        if (nextId) nextId = (await this.evaluateBlock(nextId, null)).nextId;
+        else break;
       }
-    })();
+    } catch (error) {
+      console.error(error);
+      // TODO: better error handling
+    }
   }
 
   /**
@@ -256,7 +270,7 @@ export abstract class Std {
    */
   public getEvents(): string[] {
     return Object.keys(this.hatBlockIdsByEvent);
-  };
+  }
 
   /**
    * Runs all hat blocks with a certain opcode.
@@ -274,10 +288,11 @@ export abstract class Std {
    * Runs a loop forever.
    * @param firstLoopBlockId The first block in the loop.
    */
-  public runLoopForever(firstLoopBlockId: string) {
+  public async runLoopForever(firstLoopBlockId: string) {
     const ownLoop = Symbol();
-    const newLoop = new Loop(this, firstLoopBlockId, this.loopIterationWait).forever();
+    const newLoop = new Loop(this, firstLoopBlockId, ownLoop);
     this.activeLoops[ownLoop] = newLoop;
+    await newLoop.forever();
   }
 
   /**
@@ -285,10 +300,11 @@ export abstract class Std {
    * @param firstLoopBlockId The first block in the loop.
    * @param times The amount of times to run the loop, if left undefined the loop will loop forever.
    */
-  public runLoopTimes(firstLoopBlockId: string, times: number) {
+  public async runLoopTimes(firstLoopBlockId: string, times: number) {
     const ownLoop = Symbol();
-    const newLoop = new Loop(this, firstLoopBlockId, this.loopIterationWait).times(times);
+    const newLoop = new Loop(this, firstLoopBlockId, ownLoop);
     this.activeLoops[ownLoop] = newLoop;
+    await newLoop.times(times);
   }
 
   /**
@@ -296,10 +312,11 @@ export abstract class Std {
    * @param firstLoopBlockId The first block in the loop.
    * @param conditionBlockId The conditiona block that must become true for the loop to stop.
    */
-  public runLoopUntil(firstLoopBlockId: string, conditionBlockId: string) {
+  public async runLoopUntil(firstLoopBlockId: string, conditionBlockId: string) {
     const ownLoop = Symbol();
-    const newLoop = new Loop(this, firstLoopBlockId, this.loopIterationWait).until(this, conditionBlockId);
+    const newLoop = new Loop(this, firstLoopBlockId, ownLoop);
     this.activeLoops[ownLoop] = newLoop;
+    await newLoop.until(conditionBlockId);
   }
 
   /**
@@ -308,23 +325,27 @@ export abstract class Std {
   public stopAllLoops() {
     for (const loop of Reflect.ownKeys(this.activeLoops)) {
       this.activeLoops[loop as symbol].stop();
-      delete this.activeLoops[loop as symbol];
     }
   }
 
   /**
-   * Changes the cooldown time between each iteration of the loops.
-   * @param timeMs The new cooldown time between each iteration of the loops in milliseconds.
+   * Deletes a loop by its symbol.
+   * @param loop The symbol identifying the loop.
    */
-  public setLoopIterationWait(timeMs: number) {
-    this.loopIterationWait = timeMs;
-    for (const loop of Reflect.ownKeys(this.activeLoops)) {
-      this.activeLoops[loop as symbol].adjustLoopSpeed(this.loopIterationWait);
-    }
+  public deleteLoop(loop: symbol) {
+    delete this.activeLoops[loop];
   }
 
   public setVariable(id: string, value: any) {
     this.variables[id] = value;
+  }
+
+  public changeVariableBy(id: string, value: number) {
+    this.variables[id] += value;
+  }
+
+  public getVariable(id: string) {
+    return this.variables[id];
   }
 
   /**
@@ -349,9 +370,10 @@ export abstract class Std {
    * @param options Options to pass to the operation handler.
    * @returns This function may return `any` value to be processed by
    * the caller of this function. If the operation wishes to terminate
+   * it should return `std.INTERRUPT`.
    */
-  protected runOp(block: Block, options?: any): Promise<void | null | symbol | any> {
-    return StdOps[block.opcode](this, block, options);
+  protected async runOp(block: Block, options?: any): Promise<void | null | symbol | any> {
+    return await StdOps[block.opcode](this, block, options);
   };
 
   /**
@@ -363,68 +385,71 @@ export abstract class Std {
 }
 
 class Loop {
-  private interval?: NodeJS.Timer;
-  private loopIterationWait: number;
+  private running = true;
   private runIteration: Function;
+  private self: Std;
+  private ownLoopSymbol: symbol;
 
-  constructor(self: Std, firstLoopBlockId: string, loopIterationWait: number) {
-    this.runIteration = () => self.runNextsFromBlock(firstLoopBlockId);
-    this.loopIterationWait = loopIterationWait;
+  /**
+   * Creates a new loop.
+   * @param self The target object that initiated the loop.
+   * @param firstLoopBlockId The ID of the first block in the loop.
+   */
+  constructor(self: Std, firstLoopBlockId: string, ownLoopSymbol: symbol) {
+    this.self = self;
+    this.runIteration = async () => await new Promise<any>(async (resolve, _) => {
+      setTimeout(async () => {
+        await self.runNextsFromBlock(firstLoopBlockId);
+        resolve(null);
+      }, 0);
+    });
+    this.ownLoopSymbol = ownLoopSymbol;
   }
 
   /**
-   * Run the loop forever.
-   * @chainable
+   * Runs the loop forever.
    */
-  public forever(): this {
-    this.stop();
-    this.start();
-    return this;
+  public async forever() {
+    while (this.running) {
+      await this.runIteration();
+    }
+    this.destroy();
   }
 
   /**
    * Runs the loop `times` times.
    * @param times The amount of times to run the loop.
-   * @chainable
    */
-  public times(times: number): this {
-    this.stop();
-    this.runIteration = () => {
-      if (times === 0) this.stop();
-      this.runIteration();
-      if (times) times--;
-    };
-    this.start();
-    return this;
+  public async times(times: number) {
+    for (let i = 0; this.running && i < times; i++) {
+      await this.runIteration();
+    }
+    this.destroy();
   }
 
   /**
    * Runs the loop until the condition is met.
-   * @param self The target object that initiated the loop.
    * @param conditionBlockId The conditiona block that must become true for the loop to stop.
-   * @chainable
    */
-  public until(self: Std, conditionBlockId: string): this {
-    this.stop();
-    this.runIteration = async () => {
-      if ((await self.evaluateBlock(conditionBlockId)).ret) this.stop();
-      this.runIteration();
-    };
-    this.start();
-    return this;
+  public async until(conditionBlockId: string) {
+    while (this.running && !(await this.self.evaluateBlock(conditionBlockId)).ret) {
+      await this.runIteration();
+    }
+    this.destroy();
   }
 
-  public adjustLoopSpeed(newLoopIterationWait: number) {
-    this.loopIterationWait = newLoopIterationWait;
-    this.stop();
-    this.start();
-  }
-
-  private start() {
-    this.interval = setInterval(() => this.runIteration, this.loopIterationWait);
-  }
-
+  /**
+   * Prevent the loop from starting a new iteration.
+   */
   public stop() {
-    if (this.interval) clearInterval(this.interval);
+    this.running = false;
+  }
+
+  /**
+   * Stop the loop and delete it from its host's `activeLoops` map.
+   */
+  private destroy() {
+    this.stop();
+    this.self.deleteLoop(this.ownLoopSymbol);
   }
 }

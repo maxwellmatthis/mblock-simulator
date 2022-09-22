@@ -14,9 +14,10 @@ export enum ScratchType {
   Variable = 12,
   List = 13,
 }
-export type PrimitiveDef = [ScratchType, (string | PrimitiveDef), (string | undefined)];
-type Inputs = { [index: string]: PrimitiveDef; };
-type Fields = { [index: string]: PrimitiveDef; };
+export type Input = [ScratchType, (string | Input), (string | undefined)];
+type Inputs = { [index: string]: Input; };
+export type Field = [string, string?];
+type Fields = { [index: string]: Field; };
 export type OpFn<Target> = (self: Target, block: Block, options: any) => any;
 export type Ops<Target> = { [index: string]: OpFn<Target>; };
 

@@ -25,7 +25,6 @@ export function createTarget(target: TargetJSON, lanRouter: LANRouter): Std {
       console.error(error);
     }
   }
-  console.log(targetObj);
   return targetObj;
 }
 

@@ -1,57 +1,18 @@
-// var str_test: string
-// var int_test: number
+var zaehler: number = 0
 
 @start:
-  display.println("Hello" + "World")
-  if (strings.contains("abc", "c")):
-    display.print("pass")
+  display.println("Hello " + "World!")
+  for 10:
+    zaehler += 1
+    display.println("Iteration " + zaehler)
+  display.println("Goodbye World!")
 
-  // str_test = "hello!"
-  // time.wait(1)
-  // for 10:
-  //   display.println("pass")
-  // for:
-  //   display.println("pass")
-  // if 3 > 3:
-  //   display.println("pass")
-  // if 1 > 1:
-  //   display.println("pass")
-  // elif 2 > 1:
-  //   display.println("pass")
-  // else:
-  //   display.println("pass")
+@start:
+  while zaehler < 7:
+    display.println("Running the while loop!")
+  display.println("Stopping everything...")
+  script.stopAll()
 
-  // while 1 == 1:
-  //   display.println("pass")
-
-  // script.stopOther()
-  // script.stop()
-
-  // @button "a":
-  // script.stopAll()
-
-  // display.print(string(1 + 2))
-  // display.print(string(1 - 2))
-  // display.print(string(1 * 2))
-  // display.print(string(1 / 2))
-  // display.print(string(math.random(0, 100)))
-   
-  // if 1 > 2:
-  //   display.print("pass")
-  // if 1 < 2:
-  //   display.print("pass")
-  // if 1 == 2:
-  //   display.print("pass")
-  // if 1 == 2 && 3 == 4:
-  //   display.print("pass")
-  // if 1 == 2 || 3 == 4:
-  //   display.print("pass")
-  // if 1 != 2:
-  //   display.print("pass")
-  // str_test = strings.letter("why", 1)
-  // int_test = strings.length("why")
-  // // if strings.contains("why", 1):
-  // //   display.print("pass")
-  // display.print(string(1 % 2))
-  // display.print(string(math.round(1.1)))
-  // display.print(string(math.log(1.1)))
+@start:
+  for:
+    display.println("Running the forever loop!")

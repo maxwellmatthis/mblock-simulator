@@ -10,9 +10,9 @@ type LEDs = "all";
 export const CyberPIOps: Ops<CyberPI> = {
   // Events
   "cyberpi.cyberpi_when_launch": noop,
-  "cyberpi.cyberpi_when_button_press": (self, b, actual) => (self.decodePrimitive(b.fields["fieldMenu_2"]) !== actual ? INTERRUPT : null),
-  "cyberpi.cyberpi_when_direction_key_press": (self, b, actual) => (self.decodePrimitive(b.fields["fieldMenu_2"]) !== actual ? INTERRUPT : null),
-  "cyberpi.cyberpi_when_detect_action": (self, b, actual) => (self.decodePrimitive(b.fields["tilt"]) !== actual ? INTERRUPT : null),
+  "cyberpi.cyberpi_when_button_press": (self, b, actual) => (self.decodeField(b.fields["fieldMenu_2"]) !== actual ? INTERRUPT : null),
+  "cyberpi.cyberpi_when_direction_key_press": (self, b, actual) => (self.decodeField(b.fields["fieldMenu_2"]) !== actual ? INTERRUPT : null),
+  "cyberpi.cyberpi_when_detect_action": (self, b, actual) => (self.decodeField(b.fields["tilt"]) !== actual ? INTERRUPT : null),
   "cyberpi.cyberpi_when_detect_attitude": (self, b) => { },
   "cyberpi.cyberpi_when_sensor_value_bigger_or_smaller_than": (self, b) => { },
   "cyberpi.cyberpi_wifi_broadcast_when_received_message": (self, b) => { },
@@ -100,7 +100,7 @@ export const CyberPIOps: Ops<CyberPI> = {
   "cyberpi.cyberpi_name": (self, b) => { },
 
   // Display
-  "cyberpi.cyberpi_display_println": async (self, b) => { console.log(await self.decodePrimitive(b.inputs["string_2"])); },
+  "cyberpi.cyberpi_display_println": async (self, b) => { console.log("println", await self.decodeInput(b.inputs["string_2"])); },
   "cyberpi.cyberpi_display_print": (self, b) => { },
   "cyberpi.cyberpi_console_set_font": (self, b) => { },
   "cyberpi.cyberpi_console_set_font_inputMenu_1_menu": (self, b) => { },
@@ -146,7 +146,7 @@ export class CyberPI extends Std {
   }
 
   protected async runOp(block: Block, options: any) {
-    return ops[block.opcode](this, block, options);
+    return await ops[block.opcode](this, block, options);
   }
 
   protected isHat(opcode: string): boolean {
