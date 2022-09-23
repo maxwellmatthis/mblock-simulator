@@ -1,4 +1,4 @@
-import { Block, type BlockJSON } from "./block";
+import { Block } from "./block";
 import type { Std } from "./targets/std";
 import { CyberPI } from "./targets/cyberpi";
 import { MBot2 } from "./targets/mbot2";
@@ -10,7 +10,7 @@ export interface TargetJSON {
   variables: object,
   lists: object,
   broadcasts: object,
-  blocks: { [index: string]: BlockJSON; },
+  blocks: { [index: string]: any; },
   deviceId?: string,
   loadedExtIds?: string[],
 }
@@ -20,7 +20,7 @@ export function createTarget(target: TargetJSON, lanRouter: LANRouter): Std {
   const targetObj = getTargetClass(lanRouter, target.name, target.deviceId, target.loadedExtIds);
   for (const [id, block] of Object.entries(target.blocks)) {
     try {
-      targetObj.addBlock(id, new Block(block));
+      targetObj.addBlock(id, new Block(id, block));
     } catch (error) {
       console.error(error);
     }

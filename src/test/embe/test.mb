@@ -1,18 +1,8 @@
-var zaehler: number = 0
+// search for `( )4(,\n +")` and replace with `$1 10 $2` to correct the type of all strings
+
+func wishHappyBirthday(name: string, age: number):
+  display.println("Happy Birthday " + name + "! You're " + age + " years old now.")
 
 @start:
-  display.println("Hello " + "World!")
-  for 10:
-    zaehler += 1
-    display.println("Iteration " + zaehler)
-  display.println("Goodbye World!")
-
-@start:
-  while zaehler < 7:
-    display.println("Running the while loop!")
-  display.println("Stopping everything...")
-  script.stopAll()
-
-@start:
-  for:
-    display.println("Running the forever loop!")
+  wishHappyBirthday("Alice", 23)
+  wishHappyBirthday("Bob", 75)

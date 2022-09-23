@@ -1,3 +1,8 @@
+// See https://en.scratch-wiki.info/wiki/Scratch_File_Format for more information.
+
+import type { Context } from "./context";
+import type { Std } from "./targets/std";
+
 export const noop = () => { };
 export enum ScratchType {
   InputSameBlockShadow = 1,
@@ -18,31 +23,42 @@ export type Input = [ScratchType, (string | Input), (string | undefined)];
 type Inputs = { [index: string]: Input; };
 export type Field = [string, string?];
 type Fields = { [index: string]: Field; };
-export type OpFn<Target> = (self: Target, block: Block, options: any) => any;
-export type Ops<Target> = { [index: string]: OpFn<Target>; };
+export type OpFn<Target extends Std> = (self: Target, stack: Context, block: Block, options: any) => any;
+export type Ops<Target extends Std> = { [index: string]: OpFn<Target>; };
 
-export interface BlockJSON {
-  opcode: string,
-  next: string | null,
-  parent: string | null,
-  inputs: Inputs,
-  fields: Fields,
-  shadow: boolean,
-  topLevel: boolean,
-}
+class Mutation {
+  public static tagName = "mutation";
+  public readonly children: [];
+  public readonly procCode?: string;
+  public readonly argumentIds?: string[];
+  public readonly argumentNames?: string[];
+  public readonly argumentDefaults?: (string | number | boolean)[];
+  public readonly hasNext: boolean;
+
+  public constructor(mutation: any) {
+    this.children = mutation.children || [];
+    this.procCode = mutation.proccode;
+    if (mutation.argumentids) this.argumentIds = JSON.parse(mutation.argumentids);
+    if (mutation.argumentnames) this.argumentNames = JSON.parse(mutation.argumentnames);
+    if (mutation.argumentdefaults) this.argumentDefaults = JSON.parse(mutation.argumentdefaults);
+    this.hasNext = mutation.hasnext || false;
+  }
+};
 
 export class Block {
+  public readonly id: string;
   public readonly opcode: string;
   public readonly next: string | null;
-  public readonly topLevel: boolean;
   public readonly inputs: Inputs;
   public readonly fields: Fields;
+  public readonly mutation?: Mutation;
 
-  public constructor(block: BlockJSON) {
+  public constructor(id: string, block: any) {
+    this.id = id;
     this.opcode = block.opcode;
     this.next = block.next;
-    this.topLevel = block.topLevel;
     this.inputs = block.inputs;
     this.fields = block.fields;
+    if (block.mutation) this.mutation = new Mutation(block.mutation);
   }
 }
