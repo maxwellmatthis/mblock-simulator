@@ -23,7 +23,7 @@ export const StdOps: Ops<Std> = {
   "control_wait": async (_, c, b) => (await new Promise(async (resolve, _) => setTimeout(resolve, await c.decodeInput(b.inputs["DURATION"]) * 1000))),
   "control_repeat": async (_, c, b) => (await c.runLoopTimes(await c.decodeInput(b.inputs["SUBSTACK"], true), await c.decodeInput(b.inputs["TIMES"]))),
   "control_forever": async (_, c, b) => (await c.runLoopForever(await c.decodeInput(b.inputs["SUBSTACK"], true))),
-  "control_if": async (_, c, b) => (await c.runStartingAt(await c.decodeInput(b.inputs["CONDITION"], true))),
+  "control_if": async (_, c, b) => (await c.decodeInput(b.inputs["CONDITION"]) && await c.runStartingAt(await c.decodeInput(b.inputs["SUBSTACK"], true))),
   "control_if_else": async (_, c, b) => (
     await c.decodeInput(b.inputs["CONDITIONS"])
       ? await c.runStartingAt(await c.decodeInput(b.inputs["SUBSTACK1"], true))
@@ -35,6 +35,8 @@ export const StdOps: Ops<Std> = {
     const stopOption = c.decodeField(b.fields["STOP_OPTION"]) as StopOption;
     switch (stopOption) {
       case "all": self.stopAllScripts(); break;
+      case "this script": c.destroy(); break;
+      case "other scripts in sprite": self.stopAllScripts(c.id); break;
       default: throw new Error(`"control_stop" option "${stopOption}" is not supported.`);
     }
   },
@@ -265,9 +267,11 @@ export abstract class Std {
 
   /**
    * Stops all loops.
+   * @param exceptContext The context of the loop to skip and keep running.
    */
-  public stopAllScripts() {
+  public stopAllScripts(exceptContext?: symbol) {
     for (const context of Reflect.ownKeys(this.contexts)) {
+      if (context === exceptContext) continue;
       this.contexts[context as symbol].stop();
     }
   }

@@ -172,6 +172,9 @@ export class Context {
     }
   }
 
+  /**
+   * Stop the execution and deletes the context.
+   */
   public destroy() {
     this.stop();
     this.self.deleteContext(this.id);

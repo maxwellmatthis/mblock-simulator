@@ -1,8 +1,21 @@
 // search for `( )4(,\n +")` and replace with `$1 10 $2` to correct the type of all strings
 
-func wishHappyBirthday(name: string, age: number):
-  display.println("Happy Birthday " + name + "! You're " + age + " years old now.")
+var counter = 0
 
 @start:
-  wishHappyBirthday("Alice", 23)
-  wishHappyBirthday("Bob", 75)
+  for 500:
+    // if counter % 50 == 0:
+    display.println("Counter: " + counter)
+
+// @start:
+//   time.wait(0.1)
+//   script.stopOther()
+//   display.println("Stopped")
+
+@start:
+  for 500:
+    counter += 1
+    display.println("Looooping!")
+    if counter > 100:
+      display.println("Stopping")
+      script.stop()
