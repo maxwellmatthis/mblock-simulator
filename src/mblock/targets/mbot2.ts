@@ -86,7 +86,7 @@ export class MBot2 extends CyberPI {
     return opcode in ops;
   }
 
-  public async runOp(stack: Context, block: Block, options: any) {
-    return await MBot2Ops[block.opcode](this, stack, block, options);
+  public async runOp(stack: Context, block: Block, option: any) {
+    return await MBot2Ops[block.opcode](this, stack, block, option);
   }
 }

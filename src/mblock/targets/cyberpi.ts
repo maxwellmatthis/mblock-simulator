@@ -1,4 +1,4 @@
-import { Std, StdOps, INTERRUPT, StdHats } from "./std";
+import { Std, StdOps, StdHats } from "./std";
 import { type Ops, noop, type Block } from "../block";
 import type { Context } from "../context";
 
@@ -11,10 +11,10 @@ type LEDs = "all";
 export const CyberPIOps: Ops<CyberPI> = {
   // Events
   "cyberpi.cyberpi_when_launch": noop,
-  "cyberpi.cyberpi_when_button_press": (self, c, b, actual) => (c.decodeField(b.fields["fieldMenu_2"]).toLowerCase() !== actual.toLowerCase() ? INTERRUPT : null),
-  "cyberpi.cyberpi_when_direction_key_press": (self, c, b, actual) => (c.decodeField(b.fields["fieldMenu_2"]).toLowerCase() !== actual.toLowerCase() ? INTERRUPT : null),
-  "cyberpi.cyberpi_when_detect_action": (self, c, b, actual) => (c.decodeField(b.fields["tilt"]) !== actual ? INTERRUPT : null),
-  "cyberpi.cyberpi_when_detect_attitude": (self, c, b) => { },
+  "cyberpi.cyberpi_when_button_press": (_, c, b) => (c.decodeField(b.fields["fieldMenu_2"])),
+  "cyberpi.cyberpi_when_direction_key_press": (_, c, b) => (c.decodeField(b.fields["fieldMenu_2"])),
+  "cyberpi.cyberpi_when_detect_action": (_, c, b) => (c.decodeField(b.fields["tilt"])),
+  "cyberpi.cyberpi_when_detect_attitude": (_, c, b) => { },
   "cyberpi.cyberpi_when_sensor_value_bigger_or_smaller_than": (self, c, b) => { },
   "cyberpi.cyberpi_wifi_broadcast_when_received_message": (self, c, b) => { },
 
@@ -146,8 +146,8 @@ export class CyberPI extends Std {
     return opcode in ops;
   }
 
-  public async runOp(stack: Context, block: Block, options: any) {
-    return await ops[block.opcode](this, stack, block, options);
+  public async runOp(stack: Context, block: Block, option: any) {
+    return await ops[block.opcode](this, stack, block, option);
   }
 
   protected isHat(opcode: string): boolean {

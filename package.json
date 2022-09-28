@@ -22,6 +22,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@zip.js/zip.js": "^2.6.29",
 		"pixi.js": "^6.5.1"
 	}
 }

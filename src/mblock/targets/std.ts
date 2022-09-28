@@ -2,12 +2,6 @@ import type { Input, Block, Ops } from "../block";
 import type { LANRouter } from "../global";
 import { Context } from "../context";
 
-/**
- * Return this symbol from any operation function to interrupt the
- * further execution of the stack that the operation function is called from.
- */
-export const INTERRUPT = Symbol();
-
 type StopOption = "all" | "this script" | "other scripts in sprite";
 type MathOp = "abs" | "floor" | "ceil" | "sqrt" | "sin" | "cos" | "tan" | "asin" | "acos" | "atan" | "ln" | "log" | "e ^" | "10 ^";
 
@@ -16,7 +10,7 @@ type MathOp = "abs" | "floor" | "ceil" | "sqrt" | "sin" | "cos" | "tan" | "asin"
  */
 export const StdOps: Ops<Std> = {
   // Events
-  "event_whenbroadcastreceived": async (_, c, b, broadcastId) => (c.decodeField(b.fields["BROADCAST_OPTION"]) !== broadcastId ? INTERRUPT : null),
+  "event_whenbroadcastreceived": async (_, c, b) => (c.decodeField(b.fields["BROADCAST_OPTION"])),
   "event_broadcast": async (self, c, b) => (self.runHatBlocks("event_whenbroadcastreceived", await c.decodeInput(b.inputs["BROADCAST_INPUT"]))),
 
   // Control
@@ -34,9 +28,9 @@ export const StdOps: Ops<Std> = {
   "control_stop": async (self, c, b) => {
     const stopOption = c.decodeField(b.fields["STOP_OPTION"]) as StopOption;
     switch (stopOption) {
-      case "all": self.stopAllScripts(); break;
+      case "all": self.stopAll(); break;
       case "this script": c.destroy(); break;
-      case "other scripts in sprite": self.stopAllScripts(c.id); break;
+      case "other scripts in sprite": self.stopAll(c.id); break;
       default: throw new Error(`"control_stop" option "${stopOption}" is not supported.`);
     }
   },
@@ -130,17 +124,14 @@ export const StdOps: Ops<Std> = {
 };
 
 /**
- * Hat Blocks implemented by the 
+ * Standard hat blocks. 
  */
 export const StdHats = [
-  "event_whengreaterthan",
   "event_whenbroadcastreceived",
-  "event_broadcast",
-  "event_broadcastandwait"
 ];
 
 /**
- * A base class for targets that implements the 
+ * A base class for targets that implements all standard blocks.
  */
 export abstract class Std {
   /**
@@ -149,9 +140,13 @@ export abstract class Std {
    */
   protected abstract physicalDiameterCm: number;
   /**
+   * The name of the target.
+   */
+  public readonly name: string;
+  /**
    * A map of hat opcodes mapped to all blocks with the same opcode.
    */
-  private readonly hatBlockIdsByEvent: { [index: string]: string[]; } = {};
+  private readonly hatBlocksByEvent: { [index: string]: { id: string, option: any; }[]; } = {};
   /**
    * A map of hat opcodes mapped to all blocks with the same opcode.
    */
@@ -169,11 +164,17 @@ export abstract class Std {
    */
   private readonly contexts: { [index: symbol]: Context; } = {};
   /**
+   * An empty context in which to deserialize data when
+   * there is no other context available yet.
+   */
+  private readonly emptyContext = new Context(this);
+  /**
    * The network.
    */
   private readonly lanRouter: LANRouter;
 
-  public constructor(lanRouter: LANRouter) {
+  public constructor(name: string, lanRouter: LANRouter) {
+    this.name = name;
     this.lanRouter = lanRouter;
   }
 
@@ -197,9 +198,9 @@ export abstract class Std {
   public async addBlock(id: string, block: Block) {
     if (!this.opcodeSupported(block.opcode)) throw new Error(`Opcode "${block.opcode}" is not supported on target "${this.constructor.name}".`);
     this.blocks[id] = block;
-    if (this.isHat(block.opcode)) this.registerHatBlockId(block.opcode, id);
+    if (this.isHat(block.opcode)) await this.registerHatBlock(block);
     if (block.opcode === "procedures_definition") {
-      const procCode = this.getBlock(await new Context(this).decodeInput(block.inputs["custom_block"], true)).mutation?.procCode;
+      const procCode = this.getBlock(await this.emptyContext.decodeInput(block.inputs["custom_block"], true)).mutation?.procCode;
       if (procCode) this.procedureDefinitionIdsByProcCode[procCode] = id;
     }
   }
@@ -215,33 +216,44 @@ export abstract class Std {
 
   /**
    * Saves a hat block as a block that may be triggered by an event.
-   * @param eventOpcode The opcode of the hat block.
-   * @param id The block's ID.
+   * @param block The hat block.
    */
-  private registerHatBlockId(eventOpcode: string, id: string) {
-    if (!(eventOpcode in this.hatBlockIdsByEvent)) this.hatBlockIdsByEvent[eventOpcode] = [];
-    this.hatBlockIdsByEvent[eventOpcode].push(id);
+  private async registerHatBlock(block: Block) {
+    const { opcode, id } = block;
+    if (!(opcode in this.hatBlocksByEvent)) this.hatBlocksByEvent[opcode] = [];
+    const ret = (await this.emptyContext.evaluateBlock(id)).ret;
+    this.hatBlocksByEvent[opcode].push({ id, option: ret });
   }
 
   /**
    * Gets the available events.
    * @returns The list of events that are being listened for.
    */
-  public getEvents(): string[] {
-    return Object.keys(this.hatBlockIdsByEvent);
+  public getEvents(): { opcode: string, option: any; }[] {
+    const events = [];
+    for (const [opcode, blocks] of Object.entries(this.hatBlocksByEvent)) {
+      for (const { option } of blocks) {
+        if (!Object.values(events).some((event) => event.opcode === opcode && event.option === option)) {
+          events.push({ opcode, option });
+        }
+      }
+    }
+    return events;
   }
 
   /**
    * Runs all hat blocks with a certain opcode.
    * @param eventOpcode The opcode of the hat block.
-   * @param options Options to pass to the operation handler.
+   * @param option Option to pass to the hat block.
    */
-  public runHatBlocks(eventOpcode: string, options?: any) {
-    if (!this.hatBlockIdsByEvent[eventOpcode]) return;
-    for (const eventBlockId of this.hatBlockIdsByEvent[eventOpcode]) {
-      const newContext = new Context(this);
-      this.saveContext(newContext);
-      newContext.runStartingAt(eventBlockId, options);
+  public runHatBlocks(eventOpcode: string, option?: any) {
+    if (!this.hatBlocksByEvent[eventOpcode]) return;
+    for (const hatBlock of this.hatBlocksByEvent[eventOpcode]) {
+      if (hatBlock.option == option) {
+        const newContext = new Context(this);
+        this.saveContext(newContext);
+        newContext.runStartingAt(hatBlock.id);
+      }
     }
   }
 
@@ -266,10 +278,10 @@ export abstract class Std {
   }
 
   /**
-   * Stops all loops.
+   * Stops everything.
    * @param exceptContext The context of the loop to skip and keep running.
    */
-  public stopAllScripts(exceptContext?: symbol) {
+  public stopAll(exceptContext?: symbol) {
     for (const context of Reflect.ownKeys(this.contexts)) {
       if (context === exceptContext) continue;
       this.contexts[context as symbol].stop();
@@ -296,13 +308,12 @@ export abstract class Std {
    * Executes an operation based on the block and the target.
    * @param context The context in which to run the operation.
    * @param block The block to execute.
-   * @param options Options to pass to the operation handler.
+   * @param option Option to pass to the operation handler.
    * @returns This function may return `any` value to be processed by
-   * the caller of this function. If the operation wishes to terminate
-   * it should return `std.INTERRUPT`.
+   * the caller of this function.
    */
-  public async runOp(context: Context, block: Block, options?: any): Promise<void | null | symbol | any> {
-    return await StdOps[block.opcode](this, context, block, options);
+  public async runOp(context: Context, block: Block, option?: any): Promise<void | null | symbol | any> {
+    return await StdOps[block.opcode](this, context, block, option);
   };
 
   /**

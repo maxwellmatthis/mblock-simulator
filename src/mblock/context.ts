@@ -1,5 +1,5 @@
 import { Loop } from "./loop";
-import { type Std, INTERRUPT } from "./targets/std";
+import type { Std } from "./targets/std";
 import { ScratchType, type Input, type Field } from "./block";
 
 export class Context {
@@ -90,25 +90,25 @@ export class Context {
   /**
    * Runs an existing block.
    * @param id The block's ID.
-   * @param options Options to pass to the operation handler.
+   * @param option Options to pass to the block.
    * @returns The ID of the next block and the raw return value of the operation.
    */
-  public async evaluateBlock(id: string, options?: any): Promise<{ nextId: string | null, ret: any; }> {
+  public async evaluateBlock(id: string, option?: any): Promise<{ nextId: string | null, ret: any; }> {
     const block = this.self.getBlock(id);
-    const ret = await this.self.runOp(this, block, options);
-    return { nextId: (ret === INTERRUPT ? null : block.next), ret };
+    const ret = await this.self.runOp(this, block, option);
+    return { nextId: block.next, ret };
   }
 
   /**
    * Run the block with ID `id` and all `next` blocks in parallel.
    * @param id The block's ID.
-   * @param options Options to pass to the operation handler.
+   * @param option Option to pass to the starting block.
    */
-  public async runStartingAt(id: string, options?: any) {
+  public async runStartingAt(id: string, option?: any) {
     const isMainRunner = this.isMainRunner;
     if (isMainRunner) this.isMainRunner = false;
     try {
-      let { nextId } = await this.evaluateBlock(id, options);
+      let { nextId } = await this.evaluateBlock(id, option);
       while (nextId && this.active) {
         nextId = (await this.evaluateBlock(nextId, null)).nextId;
       }
