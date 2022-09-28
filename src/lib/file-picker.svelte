@@ -45,9 +45,11 @@
 		on:click|stopPropagation
 	>
 		<div id="button">
-			<ButtonIcon on:click={() => dispatch('hide')}
-				><img src="/icons/x.svg" alt="X" /></ButtonIcon
-			>
+			<ButtonIcon
+				src="/icons/x.svg"
+				alt="X"
+				on:click={() => dispatch('hide')}
+			/>
 		</div>
 		<div id="input-container">
 			<div id="input">
@@ -75,6 +77,7 @@
 		justify-content: center;
 		#drop-zone {
 			width: 40vw;
+			min-width: 320px;
 			height: 200px;
 			border-radius: 0.4em;
 			background-color: var(--primary);

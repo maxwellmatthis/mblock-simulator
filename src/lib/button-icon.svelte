@@ -1,10 +1,13 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	const dispatch = createEventDispatcher();
+
+	export let src: string;
+	export let alt: string;
 </script>
 
 <button on:click={() => dispatch('click')}>
-	<slot>Click me!</slot>
+	<img {src} {alt} />
 </button>
 
 <style lang="scss" scoped>

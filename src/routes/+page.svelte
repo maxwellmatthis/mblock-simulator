@@ -18,28 +18,52 @@
 	const lanRouter = new LANRouter();
 	let targets: ParsedTarget[] = [];
 	// TODO: add to simulation
-	let entities: { name: string; entity: Std }[] = [];
+	let entities: { [index: symbol]: { name: string; entity: Std } } = {};
+	$: entitiesEntries = Reflect.ownKeys(entities).map((key) => {
+		return {
+			key: key as symbol,
+			value: entities[key as symbol],
+		};
+	});
+
+	const stop = (key: symbol) => {
+		entities[key].entity.stopAll();
+	};
 
 	const stopAll = () => {
-		for (const { entity } of Object.values(entities)) {
-			entity.stopAll();
+		for (const key of Reflect.ownKeys(entities)) {
+			stop(key as symbol);
 		}
+	};
+
+	const delete_ = (key: symbol) => {
+		stop(key);
+		delete entities[key];
+		entities = entities;
+	};
+
+	const deleteAll = () => {
+		stopAll();
+		entities = {};
 	};
 
 	const create = async (target: TargetJSON, name: string, amount: number) => {
 		if (amount < 1) amount = 1;
-		const newEntities = [];
+		const newEntities: { [index: symbol]: { name: string; entity: Std } } = {};
 		if (amount == 1) {
-			newEntities.push({ name, entity: await createEntity(target, lanRouter) });
+			newEntities[Symbol()] = {
+				name,
+				entity: await createEntity(target, lanRouter),
+			};
 		} else {
 			for (let i = 1; i <= amount; i++) {
-				newEntities.push({
+				newEntities[Symbol()] = {
 					name: `${name}-${i}`,
 					entity: await createEntity(target, lanRouter),
-				});
+				};
 			}
 		}
-		entities = [...entities, ...newEntities];
+		entities = Object.assign(entities, newEntities);
 	};
 
 	let canvas: HTMLCanvasElement;
@@ -59,8 +83,7 @@
 {#if showFilePicker}
 	<FilePicker
 		on:choose={({ detail: { project } }) => {
-			stopAll();
-			entities = [];
+			deleteAll();
 			targets = getTargets(project);
 			showFilePicker = false;
 		}}
@@ -73,6 +96,7 @@
 		<div id="controls">
 			<Button on:click={() => (showFilePicker = true)}>Load mBlock File</Button>
 			<Button on:click={stopAll}>Stop All</Button>
+			<Button on:click={deleteAll}>Delete All Entities</Button>
 		</div>
 		<div id="targets">
 			<h1>Targets</h1>
@@ -90,9 +114,9 @@
 		</div>
 		<div id="entities">
 			<h1>Entities</h1>
-			{#if entities.length > 0}
-				{#each entities as entity, i (i)}
-					<Entity {...entity} />
+			{#if entitiesEntries.length > 0}
+				{#each entitiesEntries as { key, value } (key)}
+					<Entity {...value} on:delete={() => delete_(key)} />
 				{/each}
 			{:else}
 				<span>No Entities have been created yet.</span>
@@ -105,13 +129,17 @@
 <style lang="scss" scoped>
 	main {
 		display: grid;
-		grid-template-columns: 400px auto;
+		grid-template-columns: 410px auto;
 		div#sidebar {
 			padding: var(--padding);
 			height: 100vh;
 			overflow-y: auto;
 			> div {
 				padding-bottom: var(--padding);
+			}
+			div#controls {
+				display: flex;
+				justify-content: space-between;
 			}
 		}
 		canvas#simulation {
