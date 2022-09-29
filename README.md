@@ -8,7 +8,7 @@ The mBlock Simulator is able to simulate mBlock code for various [Makeblock](htt
 
 1. Install the dependencies: `npm install`
 2. Build: `npm run build`
-3. Serve using something like `serve` (`npm install -g serve && serve dist`)
+3. Serve the site: `node build` (`HOST` and `PORT` can be set using environment variables.)
 
 ## Supported Devices
 
