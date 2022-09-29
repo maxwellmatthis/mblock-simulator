@@ -12,20 +12,25 @@
 		dropClass = '';
 	};
 
-	const choose = async (e: Event) => {
-		const event = e as InputEvent | DragEvent;
-		if (event.dataTransfer) {
-			const entries = new ZipReader(
-				new BlobReader(event.dataTransfer.files[0])
-			).getEntries();
-			for (const entry of await entries) {
-				if (entry.filename === 'project.json' && entry.getData) {
-					dispatch('choose', {
-						project: JSON.parse(
-							await (await entry.getData(new BlobWriter())).text()
-						),
-					});
-				}
+	const drop = (e: Event) => {
+		const event = e as DragEvent;
+		if (event.dataTransfer) choose(event.dataTransfer.files[0]);
+	};
+
+	const select = (e: Event) => {
+		const target = e.target as HTMLInputElement;
+		if (target.files) choose(target.files[0]);
+	};
+
+	const choose = async (file: File) => {
+		const entries = new ZipReader(new BlobReader(file)).getEntries();
+		for (const entry of await entries) {
+			if (entry.filename === 'project.json' && entry.getData) {
+				dispatch('choose', {
+					project: JSON.parse(
+						await (await entry.getData(new BlobWriter())).text()
+					),
+				});
 			}
 		}
 	};
@@ -41,7 +46,7 @@
 		on:dragenter|preventDefault={dragStart}
 		on:dragleave|preventDefault={dragEnd}
 		on:dragend|preventDefault={dragEnd}
-		on:drop|preventDefault={choose}
+		on:drop|preventDefault={drop}
 		on:click|stopPropagation
 	>
 		<div id="button">
@@ -56,7 +61,7 @@
 				<h2>Load mBlock File</h2>
 				<label for="file">Choose an mBlock file or drop it here.</label>
 				<div>
-					<input type="file" accept=".mblock" on:change={choose} />
+					<input type="file" accept=".mblock" on:change={select} />
 				</div>
 			</div>
 		</div>
