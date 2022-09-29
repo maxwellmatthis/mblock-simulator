@@ -21,8 +21,8 @@ export const StdOps: Ops<Std> = {
   "control_forever": async (_, c, b) => (await c.runLoopForever(await c.decodeInput(b.inputs["SUBSTACK"], true))),
   "control_if": async (_, c, b) => (await c.decodeInput(b.inputs["CONDITION"]) && await c.runStartingAt(await c.decodeInput(b.inputs["SUBSTACK"], true))),
   "control_if_else": async (_, c, b) => (
-    await c.decodeInput(b.inputs["CONDITIONS"])
-      ? await c.runStartingAt(await c.decodeInput(b.inputs["SUBSTACK1"], true))
+    await c.decodeInput(b.inputs["CONDITION"])
+      ? await c.runStartingAt(await c.decodeInput(b.inputs["SUBSTACK"], true))
       : await c.runStartingAt(await c.decodeInput(b.inputs["SUBSTACK2"], true))
   ),
   "control_wait_until": async (_, c, b) => (await new Promise(async (resolve, _) => setInterval(async () => (await c.decodeInput(b.inputs["CONDITION"])) && resolve(null), 10))),
