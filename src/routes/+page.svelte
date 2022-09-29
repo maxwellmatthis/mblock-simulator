@@ -51,16 +51,20 @@
 		if (amount < 1) amount = 1;
 		const newEntities: { [index: symbol]: { name: string; entity: Std } } = {};
 		if (amount == 1) {
+			const newEntity = await createEntity(target, lanRouter);
 			newEntities[Symbol()] = {
 				name,
-				entity: await createEntity(target, lanRouter),
+				entity: newEntity,
 			};
+			newEntity.activate();
 		} else {
 			for (let i = 1; i <= amount; i++) {
+				const newEntity = await createEntity(target, lanRouter);
 				newEntities[Symbol()] = {
 					name: `${name}-${i}`,
-					entity: await createEntity(target, lanRouter),
+					entity: newEntity,
 				};
+				newEntity.activate();
 			}
 		}
 		entities = Object.assign(entities, newEntities);
