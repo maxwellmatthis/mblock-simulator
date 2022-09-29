@@ -1,6 +1,7 @@
 <script lang="ts">
 	import ButtonIcon from './button-icon.svelte';
-	import Button from './button.svelte';
+	import Events from './entity-components/events.svelte';
+	import Procedures from './entity-components/procedures.svelte';
 	import type { Std } from 'src/mblock/targets/std';
 	import { createEventDispatcher } from 'svelte';
 	const dispatch = createEventDispatcher();
@@ -18,21 +19,8 @@
 			on:click={() => dispatch('delete')}
 		/>
 	</h2>
-	<div>
-		<h3>Events</h3>
-		{#each entity.getEvents() as { opcode, option }}
-			<div class="event">
-				<Button on:click={() => entity?.runHatBlocks(opcode, option)}>
-					<div id="play-event">
-						<img src="/icons/play.svg" alt="Play" />
-						<span>
-							{opcode}{#if option}({option}){/if}
-						</span>
-					</div>
-				</Button>
-			</div>
-		{/each}
-	</div>
+	<Events {entity} />
+	<Procedures {entity} />
 </div>
 
 <style lang="scss" scoped>
@@ -42,13 +30,6 @@
 		h2 {
 			display: flex;
 			justify-content: space-between;
-		}
-		div.event {
-			padding-bottom: var(--padding);
-			div#play-event {
-				display: flex;
-				gap: 6px;
-			}
 		}
 	}
 </style>

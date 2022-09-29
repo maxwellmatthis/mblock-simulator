@@ -2,6 +2,8 @@ import { Loop } from "./loop";
 import type { Std } from "./targets/std";
 import { ScratchType, type Input, type Field } from "./block";
 
+export type ProcedureArgs = { [index: string]: any; };
+
 export class Context {
   /**
    * A symbol to uniquely identify this context.

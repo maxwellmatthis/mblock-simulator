@@ -1,7 +1,9 @@
-import type { Input, Block, Ops } from "../block";
+import type { Input, Inputs, Block, Ops } from "../block";
 import type { LANRouter } from "../global";
-import { Context } from "../context";
+import { Context, type ProcedureArgs } from "../context";
 
+export type ArgType = "number" | "string" | "boolean";
+export type ArgDefs = { name: string, type: ArgType; }[];
 type StopOption = "all" | "this script" | "other scripts in sprite";
 type MathOp = "abs" | "floor" | "ceil" | "sqrt" | "sin" | "cos" | "tan" | "asin" | "acos" | "atan" | "ln" | "log" | "e ^" | "10 ^";
 
@@ -98,37 +100,44 @@ export const StdOps: Ops<Std> = {
   "data_showlist": async (self, c, b) => { },
   "data_hidelist": async (self, c, b) => { },
 
-  // Custom Functions
-  "procedures_definition": async (self, c, b, args) => {
-    const procedureContext = (await c.evaluateBlock(await c.decodeInput(b.inputs["custom_block"], true), args)).ret as Context;
+  // Custom Procedures
+  /** Creates a new Context and runs the function in it. */
+  "procedures_definition": async (self, _, b, args: ProcedureArgs) => {
+    const procedureContext = new Context(self, args);
     if (b.next) {
       self.saveContext(procedureContext);
       await procedureContext.runStartingAt(b.next);
     }
   },
-  "procedures_prototype": async (self, c, b, args) => {
-    const transformedArgs: { [index: string]: any; } = {};
-    for (const [argId, input] of Object.entries(args)) {
-      const argsName = c.decodeField(self.getBlock(await c.decodeInput(b.inputs[argId], true)).fields["VALUE"]);
-      transformedArgs[argsName] = await c.decodeInput(input as Input);
+  /** Transforms `procedures_call` inputs into `ProcedureArgs`. */
+  "procedures_prototype": async (self, c, b, inputs: Inputs) => {
+    const transformedArgs: ProcedureArgs = {};
+    for (const [argId, input] of Object.entries(inputs)) {
+      const argName = c.decodeField(self.getBlock(await c.decodeInput(b.inputs[argId], true)).fields["VALUE"]);
+      transformedArgs[argName] = await c.decodeInput(input as Input);
     };
-    return new Context(self, transformedArgs);
+    return transformedArgs;
   },
-  "argument_reporter_boolean": async (_, c, b) => (c.args[b.id]),
-  "argument_reporter_string_number": async (_, c, b) => {
-    return (c.args[c.decodeField(b.fields["VALUE"])]);
-  },
+  /** Returns the value stored in the reporter. */
+  "argument_reporter_boolean": async (_, c, b) => (c.args[c.decodeField(b.fields["VALUE"])]),
+  /** Returns the value stored in the reporter. */
+  "argument_reporter_string_number": async (_, c, b) => (c.args[c.decodeField(b.fields["VALUE"])]),
+  /** Calls the procedure with the inputs of the `procedure_call` block. */
   "procedures_call": async (self, c, b) => {
-    if (b.mutation?.procCode) return await c.evaluateBlock(self.getProcId(b.mutation?.procCode), b.inputs);
+    const procCode = b.mutation?.procCode;
+    if (procCode) {
+      const definitionBlock = self.getBlock(self.getProcId(procCode));
+      const prototypeBlockId = await c.decodeInput(definitionBlock.inputs["custom_block"], true);
+      const args = (await c.evaluateBlock(prototypeBlockId, b.inputs)).ret as object;
+      return await self.callProcedure(procCode, args, c);
+    }
   },
 };
 
 /**
  * Standard hat blocks. 
  */
-export const StdHats = [
-  "event_whenbroadcastreceived",
-];
+export const StdHats = ["event_whenbroadcastreceived"];
 
 /**
  * A base class for targets that implements all standard blocks.
@@ -167,7 +176,7 @@ export abstract class Std {
    * An empty context in which to deserialize data when
    * there is no other context available yet.
    */
-  private readonly emptyContext = new Context(this);
+  private readonly defaultContext = new Context(this);
   /**
    * The network.
    */
@@ -192,16 +201,26 @@ export abstract class Std {
 
   /**
    * Adds a block to the target.
-   * @param id The block's ID.
-   * @param block The block itself.
+   * @param block The block to add to the target.
    */
-  public async addBlock(id: string, block: Block) {
-    if (!this.opcodeSupported(block.opcode)) throw new Error(`Opcode "${block.opcode}" is not supported on target "${this.constructor.name}".`);
-    this.blocks[id] = block;
-    if (this.isHat(block.opcode)) await this.registerHatBlock(block);
-    if (block.opcode === "procedures_definition") {
-      const procCode = this.getBlock(await this.emptyContext.decodeInput(block.inputs["custom_block"], true)).mutation?.procCode;
-      if (procCode) this.procedureDefinitionIdsByProcCode[procCode] = id;
+  public async addBlock(block: Block) {
+    this.blocks[block.id] = block;
+  }
+
+  /**
+   * Processes all added blocks.
+   * 
+   * This is where all the opcodes are checked for support and hat blocks are registered.
+   */
+  public async processBlocks() {
+    for (const block of Object.values(this.blocks)) {
+      try {
+        if (!this.opcodeSupported(block.opcode)) throw new Error(`Opcode "${block.opcode}" is not supported on target "${this.constructor.name}".`);
+        if (this.isHat(block.opcode)) await this.registerEventBlock(block);
+        if (block.opcode === "procedures_definition") await this.registerProcedureBlock(block);
+      } catch (error) {
+        console.error(error);
+      }
     }
   }
 
@@ -215,13 +234,13 @@ export abstract class Std {
   }
 
   /**
-   * Saves a hat block as a block that may be triggered by an event.
-   * @param block The hat block.
+   * Saves the event block to the events register.
+   * @param block The event block.
    */
-  private async registerHatBlock(block: Block) {
+  private async registerEventBlock(block: Block) {
     const { opcode, id } = block;
     if (!(opcode in this.hatBlocksByEvent)) this.hatBlocksByEvent[opcode] = [];
-    const ret = (await this.emptyContext.evaluateBlock(id)).ret;
+    const ret = (await this.defaultContext.evaluateBlock(id)).ret;
     this.hatBlocksByEvent[opcode].push({ id, option: ret });
   }
 
@@ -265,8 +284,90 @@ export abstract class Std {
     this.contexts[context.id] = context;
   }
 
-  public getProcId(procCode: string) {
+  /**
+   * Saves the procedure definition to the procedure register.
+   * @param block The `procedure_definition` block. 
+   */
+  public async registerProcedureBlock(block: Block) {
+    const prototypeBlockId = await this.defaultContext.decodeInput(block.inputs["custom_block"], true);
+    const procCode = this.getBlock(prototypeBlockId).mutation?.procCode;
+    if (procCode) this.procedureDefinitionIdsByProcCode[procCode] = block.id;
+
+  }
+
+  /**
+   * Gets the block ID of the procedure definition block by its procedure code.
+   * @param procCode The procedure code.
+   * @returns The block ID of the procedure definition block.
+   */
+  public getProcId(procCode: string): string {
     return this.procedureDefinitionIdsByProcCode[procCode];
+  }
+
+  /**
+   * Calls a procedure.
+   * @param procCode The procedure code.
+   * @param args The procedure arguments.
+   * @param context Optionally the current execution context. Not needed when calling the procedure manually.
+   */
+  public async callProcedure(procCode: string, args: ProcedureArgs, context?: Context) {
+    return await (context || this.defaultContext).evaluateBlock(this.getProcId(procCode), args);
+  }
+
+  /**
+   * Get the all procedure codes and their corresponding arguments.
+   * @returns The procedures and arguments.
+   */
+  public async getProcedures() {
+    /**
+     * Extracts the types from the procedure code.
+     * 
+     * Example:
+     * ```ts
+     * console.log(getArgTypes("myProcedure %s %b %n %s"));
+     * // output:
+     * [ 'string', 'boolean', 'number', 'string' ]
+     * ```
+     * @param procCode The procedure code to extract the types from.
+     * @returns A list of argument types in the correct order.
+     */
+    function getArgTypes(procCode: string): ArgType[] {
+      const parts = procCode.split(" ");
+      const types: ArgType[] = [];
+      for (const part of parts) {
+        if (part.search(/^%[snb]$/) === 0) {
+          switch (part.split("")[1]) {
+            case "s": types.push("string"); break;
+            case "n": types.push("number"); break;
+            case "b": types.push("boolean"); break;
+          }
+        }
+      }
+      return types;
+    };
+
+    const procedures: { procCode: string, argDefs: ArgDefs; }[] = [];
+    for (const [procCode, definitionId] of Object.entries(this.procedureDefinitionIdsByProcCode)) {
+      const definitionBlock = this.getBlock(definitionId);
+      const prototypeBlock = this.getBlock(await this.defaultContext.decodeInput(definitionBlock.inputs["custom_block"], true));
+      if (!prototypeBlock.mutation?.argumentIds) {
+        console.log(new Error(`Property "mutation.argumentIds" is undefined for block "${prototypeBlock.id}".`));
+        continue;
+      }
+
+      const argTypes = getArgTypes(procCode);
+      const argumentIds = prototypeBlock.mutation.argumentIds;
+      const argDefs: ArgDefs = [];
+      for (let i = 0; i < argumentIds.length; i++) {
+        const argId = argumentIds[i];
+        const type = argTypes[i];
+        const reporter = this.getBlock(await this.defaultContext.decodeInput(prototypeBlock.inputs[argId], true));
+        const name = this.defaultContext.decodeField(reporter.fields["VALUE"]);
+        argDefs.push({ name, type });
+      }
+      procedures.push({ procCode, argDefs });
+    }
+    return procedures;
   }
 
   /**

@@ -64,12 +64,9 @@ export async function createEntity(target: TargetJSON, lanRouter: LANRouter): Pr
   const targetId = getTargetId(target);
   const entity = newEntity(target.name, lanRouter, targetId);
   for (const [id, block] of Object.entries(target.blocks)) {
-    try {
-      await entity.addBlock(id, new Block(id, block));
-    } catch (error) {
-      console.error(error);
-    }
+    entity.addBlock(new Block(id, block));
   }
+  await entity.processBlocks();
   return entity;
 }
 

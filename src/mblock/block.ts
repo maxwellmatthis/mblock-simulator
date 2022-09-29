@@ -20,9 +20,9 @@ export enum ScratchType {
   List = 13,
 }
 export type Input = [ScratchType, (string | Input), (string | undefined)];
-type Inputs = { [index: string]: Input; };
+export type Inputs = { [index: string]: Input; };
 export type Field = [string, string?];
-type Fields = { [index: string]: Field; };
+export type Fields = { [index: string]: Field; };
 export type OpFn<Target extends Std> = (self: Target, stack: Context, block: Block, option: any) => any;
 export type Ops<Target extends Std> = { [index: string]: OpFn<Target>; };
 
