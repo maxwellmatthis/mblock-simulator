@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Button from '../button.svelte';
-	import type { ArgDefs, ArgType, Std } from 'src/mblock/targets/std';
-	import type { ProcedureArgs } from 'src/mblock/context';
+	import type { ArgDefs, ArgType, Std } from '../../mblock/targets/std';
+	import type { ProcedureArgs } from '../../mblock/context';
 
 	export let entity: Std;
 	let procedures: { procCode: string; argDefs: ArgDefs }[] = [];

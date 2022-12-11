@@ -101,8 +101,8 @@ export const CyberPIOps: Ops<CyberPI> = {
   "cyberpi.cyberpi_name": (self, c, b) => { },
 
   // Display
-  "cyberpi.cyberpi_display_println": async (self, c, b) => { console.log("println", await c.decodeInput(b.inputs["string_2"])); },
-  "cyberpi.cyberpi_display_print": (self, c, b) => { },
+  "cyberpi.cyberpi_display_println": async (self, c, b) => { self.display.print(await c.decodeInput(b.inputs["string_2"]), true); },
+  "cyberpi.cyberpi_display_print": async (self, c, b) => { self.display.print(await c.decodeInput(b.inputs["string_2"])); },
   "cyberpi.cyberpi_console_set_font": (self, c, b) => { },
   "cyberpi.cyberpi_console_set_font_inputMenu_1_menu": (self, c, b) => { },
   "cyberpi.cyberpi_display_label_show_at_somewhere_with_size": (self, c, b) => { },
@@ -110,7 +110,7 @@ export const CyberPIOps: Ops<CyberPI> = {
   "cyberpi.cyberpi_display_label_show_label_xy_with_size": (self, c, b) => { },
   "cyberpi.cyberpi_display_label_show_label_xy_with_size_inputMenu_4_menu": (self, c, b) => { },
   "cyberpi.cyberpi_display_line_chart_add_data": (self, c, b) => { },
-  "cyberpi.cyberpi_display_bar_chart_set_interval": (self, c, b) => { }, // not a typo
+  "cyberpi.cyberpi_display_bar_chart_set_interval": (self, c, b) => { },
   "cyberpi.cyberpi_display_bar_chart_add_data": (self, c, b) => { },
   "cyberpi.cyberpi_display_table_add_data_at_row_column_2": (self, c, b) => { },
   "cyberpi.cyberpi_display_table_add_data_at_row_column_2_fieldMenu_1_menu": (self, c, b) => { },
@@ -167,8 +167,17 @@ class LED {
 
 }
 
+type PrintFn = (str: string, newLine?: true) => void;
 class Display {
+  private printFn: PrintFn = () => { };
 
+  public registerDisplay(printFn: PrintFn) {
+    this.printFn = printFn;
+  }
+
+  public print(str: string, newLine?: true) {
+    this.printFn(str, newLine);
+  }
 }
 
 class MotionSensing {

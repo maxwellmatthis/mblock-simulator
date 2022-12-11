@@ -2,7 +2,9 @@
 	import ButtonIcon from './button-icon.svelte';
 	import Events from './entity-components/events.svelte';
 	import Procedures from './entity-components/procedures.svelte';
-	import type { Std } from 'src/mblock/targets/std';
+	import Display from "./entity-components/display.svelte";
+	import type { Std } from '../mblock/targets/std';
+	import { CyberPI } from '../mblock/targets/cyberpi';
 	import { createEventDispatcher } from 'svelte';
 	const dispatch = createEventDispatcher();
 
@@ -21,6 +23,9 @@
 	</h2>
 	<Events {entity} />
 	<Procedures {entity} />
+	{#if entity instanceof CyberPI}
+		<Display {entity} />
+	{/if}
 </div>
 
 <style lang="scss" scoped>

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Button from '../button.svelte';
-	import type { Std } from 'src/mblock/targets/std';
+	import type { Std } from '../../mblock/targets/std';
 
 	export let entity: Std;
 	let events = entity.getEvents();
