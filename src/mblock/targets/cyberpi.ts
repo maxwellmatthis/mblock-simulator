@@ -134,8 +134,6 @@ const CyberPIHats = [
 const ops = Object.assign(CyberPIOps, StdOps);
 const hats = [...StdHats, ...CyberPIHats];
 export class CyberPI extends Std {
-  // TODO: measure
-  protected physicalDiameterCm = 5;
   public readonly audio = new Audio();
   public readonly led = new LED();
   public readonly display = new Display();

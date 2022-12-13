@@ -7,6 +7,10 @@ export type ArgDefs = { name: string, type: ArgType; }[];
 type StopOption = "all" | "this script" | "other scripts in sprite";
 type MathOp = "abs" | "floor" | "ceil" | "sqrt" | "sin" | "cos" | "tan" | "asin" | "acos" | "atan" | "ln" | "log" | "e ^" | "10 ^";
 
+export type MoveXYFn = (x: number, y: number) => void;
+export type RotateFn = (degrees: number) => void;
+export type GetRotationFn = () => number;
+
 /**
  * The basic operation handler that every target must implement.
  */
@@ -144,10 +148,11 @@ export const StdHats = ["event_whenbroadcastreceived"];
  */
 export abstract class Std {
   /**
-   * The physical size of the target's diameter in centimeters
-   * to be used in rendering and collision calculation.
+   * The name and extension of the image file in the `/static/sprites/`
+   * directory that is used to represent this entity. Null means physics
+   * are disabled.
    */
-  protected abstract physicalDiameterCm: number;
+  public readonly spriteImageName: string | null = null;
   /**
    * The name of the target.
    */
@@ -292,7 +297,6 @@ export abstract class Std {
     const prototypeBlockId = await this.defaultContext.decodeInput(block.inputs["custom_block"], true);
     const procCode = this.getBlock(prototypeBlockId).mutation?.procCode;
     if (procCode) this.procedureDefinitionIdsByProcCode[procCode] = block.id;
-
   }
 
   /**
@@ -387,7 +391,15 @@ export abstract class Std {
       if (context === exceptContext) continue;
       this.contexts[context as symbol].stop();
     }
+    this.stopCustom();
   }
+
+  /**
+   * A hook that is called by the `stopAll` function
+   * to stop custom intervals running outside a
+   * scratch context.
+   */
+  protected stopCustom() { }
 
   /**
    * Checks if an opcode is supported on the target.
@@ -423,4 +435,12 @@ export abstract class Std {
    * For example: For a sprite this would be the 'green flag pressed' event.
    */
   public abstract activate(): void;
+
+  /**
+   * Registers the movement functions for a sprite.
+   * @param setXYFn Moves the sprite by a certain x and y amount.
+   * @param rotateFn Rotates the sprite by a certain amout of degrees.
+   * @param getRotationFn Returns the current rotation of the sprite.
+   */
+  public registerSpriteMovement(moveXYFn: MoveXYFn, rotateFn: RotateFn, getRotationFn: GetRotationFn): void { };
 }

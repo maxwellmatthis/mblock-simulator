@@ -1,5 +1,0 @@
-@button "a":
-  display.print("just printing...")
-
-@button "b":
-  display.println("print-lining...")

@@ -38,6 +38,7 @@
 
 <style lang="scss" scoped>
 	div div#display {
+		padding: var(--padding);
 		background-color: var(--background-light);
 		border-radius: var(--radius);
 		height: 150px;
