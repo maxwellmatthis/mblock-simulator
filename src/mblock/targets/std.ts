@@ -155,6 +155,8 @@ export abstract class Std {
    * are disabled.
    */
   public readonly spriteImageName: string | null = null;
+  public readonly physicalLengthCm: number = 0;
+  public readonly physicalWidthCm: number = 0;
   /**
    * The name of the target.
    */

@@ -1,14 +1,12 @@
+import { MINUTE_MS, DEG_TO_RAD_FACTOR, CM_TO_PIXEL_FACTOR } from "../physics-constants";
 import type { MoveXYFn, RotateFn, GetRotationFn } from "./std";
 import { CyberPI, CyberPIOps } from "./cyberpi";
 import type { Block, Ops } from "../block";
 import type { Context } from "../context";
 
-const MINUTE_MS = 60 * 1000;
 const DRIVE_DELTA_MS = 30;
 const DRIVE_DELTAS_PER_MINUTE_MS = MINUTE_MS / DRIVE_DELTA_MS;
 const TURN_TIME_PER_DEGREE_MS = 10;
-const DEG_TO_RAD_FACTOR = Math.PI / 180;
-const CM_TO_PIXEL_FACTOR = 15;
 const WHEEL_CIRCUMFRENCE_CM = 6 * Math.PI;
 const DEFAULT_RPM = 16;
 
@@ -112,6 +110,8 @@ export const MBot2Ops: Ops<MBot2> = {
 const ops = Object.assign(MBot2Ops, CyberPIOps);
 export class MBot2 extends CyberPI {
   public readonly spriteImageName = "mbot2.png";
+  public readonly physicalLengthCm = 17;
+  public readonly physicalWidthCm = 17;
   public readonly motors = new Motors();
 
   protected opcodeSupported(opcode: string): boolean {

@@ -4,8 +4,9 @@
 	import Target from '$lib/target.svelte';
 	import Entity from '$lib/entity.svelte';
 	import { onMount } from 'svelte';
-	import { Application, Container, Sprite } from 'pixi.js';
-	import { Camera, translationFunctions } from '../pixi/positioning';
+	import type { Sprite } from 'pixi.js';
+	import { SimulationView } from '../pixi/simulation-view';
+	import { translationFunctions } from '../pixi/positioning';
 	import { LANRouter } from '../mblock/global';
 	import {
 		createEntity,
@@ -57,11 +58,9 @@
 			const newEntity = await createEntity(target, lanRouter);
 			let sprite = undefined;
 			if (newEntity.spriteImageName) {
-				sprite = Sprite.from('/sprites/' + newEntity.spriteImageName);
-				sprite.anchor.set(0.5);
+				sprite = pixiApp.addSprite(newEntity.spriteImageName);
 				const { moveXY, rotate, getRotation } = translationFunctions(sprite);
-				newEntity.registerSpriteMovement(moveXY, rotate, getRotation);
-				map.addChild(sprite);
+    		newEntity.registerSpriteMovement(moveXY, rotate, getRotation);
 			}
 			newEntities[Symbol()] = {
 				name: `${name}${amount > 1 ? '-' + i : ''}`,
@@ -75,24 +74,8 @@
 
 	/* canvas */
 	let canvas: HTMLCanvasElement;
-	let pixiApp: Application;
-	let camera: Camera;
-	const map = new Container();
-	const resize = () => {
-		pixiApp && pixiApp.renderer.resize(canvas.clientWidth, canvas.clientHeight);
-	};
-	onMount(() => {
-		pixiApp = new Application({
-			view: canvas,
-			backgroundColor: 0xf5f5f5,
-			antialias: true,
-		});
-		resize();
-		window.addEventListener('resize', resize);
-		pixiApp.stage.addChild(map);
-		camera = new Camera(pixiApp, map);
-		camera.focus(0, 0);
-	});
+	let pixiApp: SimulationView;
+	onMount(() => (pixiApp = new SimulationView(canvas)));
 </script>
 
 {#if showFilePicker}
@@ -110,8 +93,10 @@
 	<div id="sidebar">
 		<div id="controls">
 			<Button on:click={() => (showFilePicker = true)}>Load mBlock File</Button>
-			<Button backgroundColor={"yellow"} on:click={stopAll}>Stop All</Button>
-			<Button backgroundColor={"red"} on:click={deleteAll}>Delete All Entities</Button>
+			<Button backgroundColor={'yellow'} on:click={stopAll}>Stop All</Button>
+			<Button backgroundColor={'red'} on:click={deleteAll}
+				>Delete All Entities</Button
+			>
 		</div>
 		<div id="targets">
 			<h1>Targets</h1>
@@ -142,10 +127,10 @@
 		id="simulation"
 		bind:this={canvas}
 		on:wheel|preventDefault={(ev) =>
-			camera.scaleBy(ev.offsetX, ev.offsetY, ev.deltaY)}
-		on:mousedown={(ev) => camera.startDrag(ev.offsetX, ev.offsetY)}
-		on:mousemove={(ev) => camera.drag(ev.offsetX, ev.offsetY)}
-		on:mouseup={() => camera.stopDrag()}
+			pixiApp.camera.scaleBy(ev.offsetX, ev.offsetY, ev.deltaY)}
+		on:mousedown={(ev) => pixiApp.camera.startDrag(ev.offsetX, ev.offsetY)}
+		on:mousemove={(ev) => pixiApp.camera.drag(ev.offsetX, ev.offsetY)}
+		on:mouseup={() => pixiApp.camera.stopDrag()}
 	/>
 </main>
 
