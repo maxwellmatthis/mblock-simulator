@@ -76,7 +76,6 @@ export const MBot2Ops: Ops<MBot2> = {
       setTimeout(() => {
         self.motors.setRPMs(0);
         resolve();
-        // TODO: get the timing right (t=s/v)
       }, (distance * unitFactor) / (DEFAULT_RPM * WHEEL_CIRCUMFRENCE_CM) * MINUTE_MS);
     });
   },

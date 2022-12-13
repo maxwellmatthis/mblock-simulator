@@ -1,19 +1,33 @@
 <script lang="ts">
 	import Button from '../button.svelte';
-	import type { ArgDefs, ArgType, Std } from '../../mblock/targets/std';
+	import type {
+		ArgType,
+		ProcedureDefinition,
+		Std,
+	} from '../../mblock/targets/std';
 	import type { ProcedureArgs } from '../../mblock/context';
 
 	export let entity: Std;
-	let procedures: { procCode: string; argDefs: ArgDefs }[] = [];
-	(async () => (procedures = await entity.getProcedures()))();
+	let procedures: ProcedureDefinition[] = [];
+	let args: { [index: string]: ProcedureArgs } = {};
+	(async () => {
+		procedures = await entity.getProcedures();
+		for (const { procCode, argDefs } of procedures) {
+			args[procCode] = {};
+			for (const { name, default_ } of argDefs) {
+				args[procCode][name] = default_;
+			}
+		}
+		args = args;
+	})();
 
-	let customArguments: ProcedureArgs = {};
-	const setArg = (name: string, type: ArgType, e: Event) => {
-		let value: string | number | boolean = (e.target as HTMLInputElement).value;
-		// (type: "string") is the default and therefore already covered.
+	const setArg = (procCode: string, name: string, type: ArgType, e: Event) => {
+		const target = e.target as HTMLInputElement;
+		let value: string | number | boolean = target.value;
 		if (type === 'number') value = Number(value);
-		else if (type === 'boolean') value = (value === 'true');
-		customArguments = Object.assign({}, customArguments, { [name]: value });
+		else if (type === 'boolean') value = target.checked;
+		args[procCode] = { ...args[procCode], [name]: value};
+		args = args;
 	};
 </script>
 
@@ -24,7 +38,7 @@
 			<div class="procedure">
 				<Button
 					fillParentWidth={true}
-					on:click={() => entity.callProcedure(procCode, customArguments)}
+					on:click={() => entity.callProcedure(procCode, args[procCode])}
 				>
 					<div class="play">
 						<img src="/icons/play.svg" alt="Play" />
@@ -34,14 +48,24 @@
 								{#each argDefs as { name, type } (name)}
 									<div class="argument">
 										<label for={name}>{name}</label>
-										<input
-											id={name}
-											type="text"
-											placeholder={name}
-											on:click|stopPropagation
-											on:input={(e) => setArg(name, type, e)}
-											on:change={(e) => setArg(name, type, e)}
-										/>
+										<div>
+											<input
+												id={name}
+												type={type === 'string'
+													? 'text'
+													: type === 'number'
+													? 'number'
+													: 'checkbox'}
+												placeholder={name}
+												class={type === 'boolean' ? '' : 'max-width'}
+												on:click|stopPropagation
+												on:input={(e) => setArg(procCode, name, type, e)}
+												on:change={(e) => setArg(procCode, name, type, e)}
+											/>
+											{#if type === 'boolean'}
+												<span> -> {args[procCode][name] || false}</span>
+											{/if}
+										</div>
 									</div>
 								{/each}
 							{/if}
@@ -64,12 +88,17 @@
 			div.play-info {
 				flex-grow: 1;
 				text-align: left;
+				overflow: auto;
 				div.argument {
 					display: grid;
 					grid-template-columns: 40% 60%;
-					input {
-						width: 100%;
-						border: none;
+					div {
+						input {
+							border: none;
+						}
+						input.max-width {
+							width: 100%;
+						}
 					}
 				}
 			}

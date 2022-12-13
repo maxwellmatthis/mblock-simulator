@@ -3,7 +3,9 @@ import type { LANRouter } from "../global";
 import { Context, type ProcedureArgs } from "../context";
 
 export type ArgType = "number" | "string" | "boolean";
-export type ArgDefs = { name: string, type: ArgType; }[];
+export type ArgDefs = { name: string, type: ArgType, default_: string | number | boolean; }[];
+export type ProcedureDefinition = { procCode: string; argDefs: ArgDefs; };
+
 type StopOption = "all" | "this script" | "other scripts in sprite";
 type MathOp = "abs" | "floor" | "ceil" | "sqrt" | "sin" | "cos" | "tan" | "asin" | "acos" | "atan" | "ln" | "log" | "e ^" | "10 ^";
 
@@ -166,6 +168,11 @@ export abstract class Std {
    */
   private readonly procedureDefinitionIdsByProcCode: { [index: string]: string; } = {};
   /**
+   * A place to store the result of the `this.getProcedures()` function,
+   * since it's return value is constant and it's computation is slow.
+   */
+  private procedureDefinitionCache: ProcedureDefinition[] | null = null;
+  /**
    * A map of block IDs mapped to their respective blocks.
    */
   private readonly blocks: { [index: string]: Block; } = {};
@@ -322,7 +329,9 @@ export abstract class Std {
    * Get the all procedure codes and their corresponding arguments.
    * @returns The procedures and arguments.
    */
-  public async getProcedures() {
+  public async getProcedures(): Promise<ProcedureDefinition[]> {
+    if (this.procedureDefinitionCache !== null) return this.procedureDefinitionCache;
+
     /**
      * Extracts the types from the procedure code.
      * 
@@ -364,13 +373,17 @@ export abstract class Std {
       const argDefs: ArgDefs = [];
       for (let i = 0; i < argumentIds.length; i++) {
         const argId = argumentIds[i];
-        const type = argTypes[i];
         const reporter = this.getBlock(await this.defaultContext.decodeInput(prototypeBlock.inputs[argId], true));
         const name = this.defaultContext.decodeField(reporter.fields["VALUE"]);
-        argDefs.push({ name, type });
+        const type = argTypes[i];
+        let default_: string | number | boolean = "";
+        if (type === "number") default_ = 0;
+        else if (type === "boolean") default_ = false;
+        argDefs.push({ name, type, default_ });
       }
       procedures.push({ procCode, argDefs });
     }
+    this.procedureDefinitionCache = procedures;
     return procedures;
   }
 

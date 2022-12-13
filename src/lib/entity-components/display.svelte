@@ -47,6 +47,7 @@
 		scroll-snap-type: y mandatory;
 		span {
 			display: block;
+			word-wrap: break-word;
 		}
 	}
 	div div#display.sticky {
