@@ -128,6 +128,7 @@ export class MBot2 extends CyberPI {
 
   protected stopCustom(): void {
     this.motors.clearRotationInterval();
+    this.motors.setRPMs(0, 0);
   }
 }
 

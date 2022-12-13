@@ -95,9 +95,11 @@ export const CyberPIOps: Ops<CyberPI> = {
   "cyberpi.cyberpi_wifi_disconnect": (self, c, b) => { },
   "cyberpi.cyberpi_wifi_broadcast_get_value": (self, c, b) => { },
 
-  // MBot2
-  "cyberpi.cyberpi_timer_reset": (self, c, b) => { },
-  "cyberpi.cyberpi_timer_get": (self, c, b) => { },
+  // Time
+  "cyberpi.cyberpi_timer_reset": (self, c, b) => self.launchTime_unixMillis = Date.now(),
+  "cyberpi.cyberpi_timer_get": (self, c, b) => (Date.now() - self.launchTime_unixMillis) / 1000,
+
+  // Name
   "cyberpi.cyberpi_name": (self, c, b) => { },
 
   // Display
@@ -134,6 +136,7 @@ const CyberPIHats = [
 const ops = Object.assign(CyberPIOps, StdOps);
 const hats = [...StdHats, ...CyberPIHats];
 export class CyberPI extends Std {
+  public launchTime_unixMillis = Date.now();
   public readonly audio = new Audio();
   public readonly led = new LED();
   public readonly display = new Display();
