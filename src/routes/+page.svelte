@@ -110,8 +110,8 @@
 	<div id="sidebar">
 		<div id="controls">
 			<Button on:click={() => (showFilePicker = true)}>Load mBlock File</Button>
-			<Button on:click={stopAll}>Stop All</Button>
-			<Button on:click={deleteAll}>Delete All Entities</Button>
+			<Button backgroundColor={"yellow"} on:click={stopAll}>Stop All</Button>
+			<Button backgroundColor={"red"} on:click={deleteAll}>Delete All Entities</Button>
 		</div>
 		<div id="targets">
 			<h1>Targets</h1>

@@ -4,9 +4,10 @@
 
 	export let leftBorderRadius = true;
 	export let fillParentWidth = false;
+	export let backgroundColor: "primary" | "yellow" | "red" = "primary";
 </script>
 
-<button class:leftBorderRadius class:fillParentWidth on:click={() => dispatch('click')}>
+<button class={backgroundColor} class:leftBorderRadius class:fillParentWidth on:click={() => dispatch('click')}>
 	<slot>Click me!</slot>
 </button>
 
@@ -20,6 +21,14 @@
 		border-bottom-right-radius: var(--radius);
 		text-align: center;
 		cursor: pointer;
+	}
+
+	button.yellow {
+		background-color: rgba(255, 255, 0, 0.7);
+	}
+
+	button.red {
+		background-color: rgba(255, 0, 0, 0.8);
 	}
 	
 	button.leftBorderRadius {
