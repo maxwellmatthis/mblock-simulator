@@ -17,9 +17,16 @@
 	import type { Std } from '../mblock/targets/std';
 
 	/* file picker */
-	let showFilePicker = true;
-	const lanRouter = new LANRouter();
+	let showFilePicker = false;
 	let targets: ParsedTarget[] = [];
+	const SAVED_TARGETS_STORAGE_KEY = "savedTargets";
+	onMount(() => {
+		const savedTargets = window.localStorage.getItem(SAVED_TARGETS_STORAGE_KEY);
+		if (savedTargets === null) showFilePicker = true;
+		else targets = JSON.parse(savedTargets);
+	});
+	
+	/* targets and entities */
 	type Entities = {
 		[index: symbol]: { name: string; entity: Std; pixi?: Sprite };
 	};
@@ -30,8 +37,7 @@
 			value: entities[key as symbol],
 		};
 	});
-
-	/* targets and entities */
+	
 	const stop = (key: symbol) => {
 		entities[key].entity.stopAll();
 	};
@@ -51,6 +57,7 @@
 			delete_(key as symbol);
 		}
 	};
+	const lanRouter = new LANRouter();
 	const create = async (target: TargetJSON, name: string, amount: number) => {
 		if (amount < 1) amount = 1;
 		const newEntities: Entities = {};
@@ -83,6 +90,7 @@
 		on:choose={({ detail: { project } }) => {
 			deleteAll();
 			targets = getTargets(project);
+			window.localStorage.setItem(SAVED_TARGETS_STORAGE_KEY, JSON.stringify(targets));
 			showFilePicker = false;
 		}}
 		on:hide={() => (showFilePicker = false)}
