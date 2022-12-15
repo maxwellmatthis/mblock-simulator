@@ -88,23 +88,23 @@ export const StdOps: Ops<Std> = {
   },
 
   // Data
-  "data_variable": async (self, c, b) => { },
+  // "data_variable": async (self, c, b) => { },
   "data_setvariableto": async (self, c, b) => (self.setVariable(c.decodeField(b.fields["VARIABLE"]), await c.decodeInput(b.inputs["VALUE"]))),
   "data_changevariableby": async (self, c, b) => (self.changeVariableBy(c.decodeField(b.fields["VARIABLE"]), await c.decodeInput(b.inputs["VALUE"]))),
-  "data_showvariable": async (self, c, b) => { },
-  "data_hidevariable": async (self, c, b) => { },
-  "data_listcontents": async (self, c, b) => { },
-  "data_addtolist": async (self, c, b) => { },
-  "data_deleteoflist": async (self, c, b) => { },
-  "data_deletealloflist": async (self, c, b) => { },
-  "data_insertatlist": async (self, c, b) => { },
-  "data_replaceitemoflist": async (self, c, b) => { },
-  "data_itemoflist": async (self, c, b) => { },
-  "data_itemnumoflist": async (self, c, b) => { },
-  "data_lengthoflist": async (self, c, b) => { },
-  "data_listcontainsitem": async (self, c, b) => { },
-  "data_showlist": async (self, c, b) => { },
-  "data_hidelist": async (self, c, b) => { },
+  // "data_showvariable": async (self, c, b) => { },
+  // "data_hidevariable": async (self, c, b) => { },
+  // "data_listcontents": async (self, c, b) => { },
+  // "data_addtolist": async (self, c, b) => { },
+  // "data_deleteoflist": async (self, c, b) => { },
+  // "data_deletealloflist": async (self, c, b) => { },
+  // "data_insertatlist": async (self, c, b) => { },
+  // "data_replaceitemoflist": async (self, c, b) => { },
+  // "data_itemoflist": async (self, c, b) => { },
+  // "data_itemnumoflist": async (self, c, b) => { },
+  // "data_lengthoflist": async (self, c, b) => { },
+  // "data_listcontainsitem": async (self, c, b) => { },
+  // "data_showlist": async (self, c, b) => { },
+  // "data_hidelist": async (self, c, b) => { },
 
   // Custom Procedures
   /** Creates a new Context and runs the function in it. */
@@ -194,7 +194,7 @@ export abstract class Std {
   /**
    * The network.
    */
-  private readonly lanRouter: LANRouter;
+  public readonly lanRouter: LANRouter;
 
   public constructor(name: string, lanRouter: LANRouter) {
     this.name = name;
