@@ -1,0 +1,42 @@
+/* Tip: Use https://github.com/Bananenpro/embe to compile this to a real `.mblock` file. */
+
+@launch:
+  display.println("Hello World!")
+
+var a = 0
+var b = 0
+var temp = 0
+var startTime = 0
+func fibonacci(n: number, drive: boolean):
+  startTime = time.timer
+  a = 0
+  b = 1
+  for n:
+    display.println(string(b))
+    if drive:
+      motors.moveDistance(b)
+      motors.turnLeft(90)
+    temp = a
+    a = b
+    b = temp+b
+  display.println("finished in " + (time.timer - startTime) + "s")
+
+@button "b":
+  fibonacci(500, 1==0)
+
+func printMessage(message: string, newLine: boolean):
+  if newLine:
+    display.println(message)
+  else:
+    display.print(message)
+
+var n = 0
+func printEvenOrUneven():
+  for:
+    display.print(n + ": ")
+    if (n % 2 == 0):
+      display.println("even")
+    else:
+      display.println("uneven")
+    n += 1
+    time.wait(1)
