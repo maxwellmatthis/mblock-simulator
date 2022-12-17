@@ -37,9 +37,9 @@ export function getTargets(mBlock: object): ParsedTarget[] {
   }
 }
 
-enum TargetId {
-  CyberPI,
-  MBot2
+export enum TargetId {
+  CyberPI = "cyberpi",
+  MBot2 = "mbot2"
 }
 
 export function getTargetId(target: TargetJSON): TargetId {
@@ -62,7 +62,7 @@ function extsLoaded(loadedExtIds: string[], ...requiredExtensions: string[]): bo
 
 export async function createEntity(target: TargetJSON, lanRouter: LANRouter): Promise<Std> {
   const targetId = getTargetId(target);
-  const entity = newEntity(target.name, lanRouter, targetId);
+  const entity = newEntity(targetId, target.name, lanRouter);
   for (const [id, block] of Object.entries(target.blocks)) {
     entity.addBlock(new Block(id, block));
   }
@@ -70,10 +70,10 @@ export async function createEntity(target: TargetJSON, lanRouter: LANRouter): Pr
   return entity;
 }
 
-function newEntity(name: string, lanRouter: LANRouter, targetId: TargetId): Std {
+function newEntity(targetId: TargetId, name: string, lanRouter: LANRouter): Std {
   switch (targetId) {
-    case TargetId.CyberPI: return new CyberPI(name, lanRouter);
-    case TargetId.MBot2: return new MBot2(name, lanRouter);
+    case TargetId.CyberPI: return new CyberPI(targetId, name, lanRouter);
+    case TargetId.MBot2: return new MBot2(targetId, name, lanRouter);
     default: throw new Error(`Unknown target: ${name}.`);
   }
 }

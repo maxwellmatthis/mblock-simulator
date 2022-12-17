@@ -1,6 +1,7 @@
 import type { Input, Inputs, Block, Ops } from "../block";
 import type { LANRouter } from "../global";
 import { Context, type ProcedureArgs } from "../context";
+import type { TargetId } from "../target";
 
 export type ArgType = "number" | "string" | "boolean";
 export type ArgDefs = { name: string, type: ArgType, default_: string | number | boolean; }[];
@@ -149,14 +150,8 @@ export const StdHats = ["event_whenbroadcastreceived"];
  * A base class for targets that implements all standard blocks.
  */
 export abstract class Std {
-  /**
-   * The name and extension of the image file in the `/static/sprites/`
-   * directory that is used to represent this entity. Null means physics
-   * are disabled.
-   */
-  public readonly spriteImageName: string | null = null;
-  public readonly physicalLengthCm: number = 0;
-  public readonly physicalWidthCm: number = 0;
+  public readonly targetId: TargetId;
+  public readonly physicsEnabled: boolean = false;
   /**
    * The name of the target.
    */
@@ -196,7 +191,8 @@ export abstract class Std {
    */
   public readonly lanRouter: LANRouter;
 
-  public constructor(name: string, lanRouter: LANRouter) {
+  public constructor(targetId: TargetId, name: string, lanRouter: LANRouter) {
+    this.targetId = targetId;
     this.name = name;
     this.lanRouter = lanRouter;
   }

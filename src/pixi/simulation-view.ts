@@ -1,5 +1,7 @@
 import { Camera } from "./camera";
-import { Application, Container, Sprite } from "pixi.js";
+import { SimulationSprite } from "./simulation-sprite";
+import { Application, Container } from "pixi.js";
+import type { TargetId } from "../mblock/target";
 
 export class SimulationView extends Application {
   private readonly map = new Container();
@@ -15,10 +17,9 @@ export class SimulationView extends Application {
     this.camera.focus(0, 0);
   }
 
-  public addSprite(spriteImageName: string) {
-    const sprite = Sprite.from('/sprites/' + spriteImageName);
-    sprite.anchor.set(0.5);
-    this.map.addChild(sprite);
-    return sprite;
+  public addSprite(targetId: TargetId): SimulationSprite {
+    const newSimulationSprite = new SimulationSprite(targetId);
+    this.map.addChild(newSimulationSprite.container);
+    return newSimulationSprite;
   }
 }

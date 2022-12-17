@@ -6,7 +6,6 @@
 	import { onMount } from 'svelte';
 	import type { Sprite } from 'pixi.js';
 	import { SimulationView } from '../pixi/simulation-view';
-	import { translationFunctions } from '../pixi/positioning';
 	import { LANRouter } from '../mblock/global';
 	import {
 		createEntity,
@@ -15,20 +14,21 @@
 		type TargetJSON,
 	} from '../mblock/target';
 	import type { Std } from '../mblock/targets/std';
+	import type { SimulationSprite } from 'src/pixi/simulation-sprite';
 
 	/* file picker */
 	let showFilePicker = false;
 	let targets: ParsedTarget[] = [];
-	const SAVED_TARGETS_STORAGE_KEY = "savedTargets";
+	const SAVED_TARGETS_STORAGE_KEY = 'savedTargets';
 	onMount(() => {
 		const savedTargets = window.localStorage.getItem(SAVED_TARGETS_STORAGE_KEY);
 		if (savedTargets === null) showFilePicker = true;
 		else targets = JSON.parse(savedTargets);
 	});
-	
+
 	/* targets and entities */
 	type Entities = {
-		[index: symbol]: { name: string; entity: Std; pixi?: Sprite };
+		[index: symbol]: { name: string; entity: Std; pixi?: SimulationSprite };
 	};
 	let entities: Entities = {};
 	$: entitiesEntries = Reflect.ownKeys(entities).map((key) => {
@@ -37,7 +37,7 @@
 			value: entities[key as symbol],
 		};
 	});
-	
+
 	const stop = (key: symbol) => {
 		entities[key].entity.stopAll();
 	};
@@ -63,11 +63,11 @@
 		const newEntities: Entities = {};
 		for (let i = 1; i <= amount; i++) {
 			const newEntity = await createEntity(target, lanRouter);
-			let sprite = undefined;
-			if (newEntity.spriteImageName) {
-				sprite = pixiApp.addSprite(newEntity.spriteImageName);
-				const { moveXY, rotate, getRotation } = translationFunctions(sprite);
-    		newEntity.registerSpriteMovement(moveXY, rotate, getRotation);
+			let sprite: SimulationSprite | undefined = undefined;
+			if (newEntity.physicsEnabled) {
+				sprite = pixiApp.addSprite(newEntity.targetId);
+				const { moveXY, rotate, getRotation } = sprite.translationFunctions();
+				newEntity.registerSpriteMovement(moveXY, rotate, getRotation);
 			}
 			newEntities[Symbol()] = {
 				name: `${name}${amount > 1 ? '-' + i : ''}`,
@@ -90,7 +90,10 @@
 		on:choose={({ detail: { project } }) => {
 			deleteAll();
 			targets = getTargets(project);
-			window.localStorage.setItem(SAVED_TARGETS_STORAGE_KEY, JSON.stringify(targets));
+			window.localStorage.setItem(
+				SAVED_TARGETS_STORAGE_KEY,
+				JSON.stringify(targets)
+			);
 			showFilePicker = false;
 		}}
 		on:hide={() => (showFilePicker = false)}

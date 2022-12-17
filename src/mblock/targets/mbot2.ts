@@ -116,9 +116,7 @@ export const MBot2Ops: Ops<MBot2> = {
 
 const ops = Object.assign(MBot2Ops, CyberPIOps);
 export class MBot2 extends CyberPI {
-  public readonly spriteImageName = "mbot2.png";
-  public readonly physicalLengthCm = 17;
-  public readonly physicalWidthCm = 17;
+  public readonly physicsEnabled = true;
   public readonly motors = new Motors();
 
   protected opcodeSupported(opcode: string): boolean {
