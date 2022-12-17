@@ -97,7 +97,12 @@ export class Context {
    */
   public async evaluateBlock(id: string, option?: any): Promise<{ nextId: string | null, ret: any; }> {
     const block = this.self.getBlock(id);
-    const ret = await this.self.runOp(this, block, option);
+    let ret;
+    try {
+      ret = await this.self.runOp(this, block, option);
+    } catch (error) {
+      console.error(block, error);
+    }
     return { nextId: block.next, ret };
   }
 

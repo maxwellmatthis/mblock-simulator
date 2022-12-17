@@ -93,7 +93,7 @@ export const CyberPIOps: Ops<CyberPI> = {
   // "cyberpi.cyberpi_wifi_is_connect": (self, c, b) => { },
   // "cyberpi.cyberpi_wifi_reconnect": (self, c, b) => { },
   // "cyberpi.cyberpi_wifi_disconnect": (self, c, b) => { },
-  // "cyberpi.cyberpi_wifi_broadcast_get_value": (self, c, b) => { },
+  "cyberpi.cyberpi_wifi_broadcast_get_value": async (self, c, b) => self.lanRouter.getValue(await c.decodeInput(b.inputs["message"])),
 
   // Time
   "cyberpi.cyberpi_timer_reset": (self, c, b) => self.launchTime_unixMillis = Date.now(),
