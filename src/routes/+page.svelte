@@ -49,6 +49,7 @@
 	const delete_ = (key: symbol) => {
 		stop(key);
 		entities[key].pixi?.destroy();
+		entities[key].entity.prepareDeletion();
 		delete entities[key];
 		entities = entities;
 	};
@@ -62,7 +63,7 @@
 		if (amount < 1) amount = 1;
 		const newEntities: Entities = {};
 		for (let i = 1; i <= amount; i++) {
-			const newEntity = await createEntity(target, lanRouter);
+			const newEntity = await createEntity(target, lanRouter, name);
 			let sprite: SimulationSprite | undefined = undefined;
 			if (newEntity.physicsEnabled) {
 				sprite = pixiApp.addSprite(newEntity.targetId);

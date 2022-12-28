@@ -153,7 +153,7 @@ export abstract class Std {
   public readonly targetId: TargetId;
   public readonly physicsEnabled: boolean = false;
   /**
-   * The name of the target.
+   * The custom name of the target.
    */
   public readonly name: string;
   /**
@@ -191,10 +191,11 @@ export abstract class Std {
    */
   public readonly lanRouter: LANRouter;
 
-  public constructor(targetId: TargetId, name: string, lanRouter: LANRouter) {
+  public constructor(targetId: TargetId, lanRouter: LANRouter, name: string) {
     this.targetId = targetId;
-    this.name = name;
     this.lanRouter = lanRouter;
+    this.name = name;
+    lanRouter.registerTarget(this);
   }
 
   public setVariable(id: string, value: any) {
@@ -411,6 +412,13 @@ export abstract class Std {
    * scratch context.
    */
   protected stopCustom() { }
+
+  /**
+   * Performs a minimal cleanup in preparation for deletion of the object.
+   */
+  public prepareDeletion() {
+    this.lanRouter.unregisterTarget(this);
+  }
 
   /**
    * Checks if an opcode is supported on the target.

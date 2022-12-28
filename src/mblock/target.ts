@@ -60,9 +60,9 @@ function extsLoaded(loadedExtIds: string[], ...requiredExtensions: string[]): bo
   return required.size <= loaded.size && [...required].every((x) => loaded.has(x));
 }
 
-export async function createEntity(target: TargetJSON, lanRouter: LANRouter): Promise<Std> {
+export async function createEntity(target: TargetJSON, lanRouter: LANRouter, name: string): Promise<Std> {
   const targetId = getTargetId(target);
-  const entity = newEntity(targetId, target.name, lanRouter);
+  const entity = newEntity(targetId, lanRouter, name);
   for (const [id, block] of Object.entries(target.blocks)) {
     entity.addBlock(new Block(id, block));
   }
@@ -70,10 +70,10 @@ export async function createEntity(target: TargetJSON, lanRouter: LANRouter): Pr
   return entity;
 }
 
-function newEntity(targetId: TargetId, name: string, lanRouter: LANRouter): Std {
+function newEntity(targetId: TargetId, lanRouter: LANRouter, name: string): Std {
   switch (targetId) {
-    case TargetId.CyberPI: return new CyberPI(targetId, name, lanRouter);
-    case TargetId.MBot2: return new MBot2(targetId, name, lanRouter);
+    case TargetId.CyberPI: return new CyberPI(targetId, lanRouter, name);
+    case TargetId.MBot2: return new MBot2(targetId, lanRouter, name);
     default: throw new Error(`Unknown target: ${name}.`);
   }
 }

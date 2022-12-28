@@ -22,8 +22,13 @@
 		}
 	};
 
+	const clearFn = () => {
+		if (currentLine) historyLines = [...historyLines, currentLine];
+		historyLines = [...historyLines, '--- clear console ---'];
+	}
+
 	export let entity: CyberPI;
-	entity.display.registerDisplay(printFn);
+	entity.display.registerDisplay(printFn, clearFn);
 </script>
 
 <div>
